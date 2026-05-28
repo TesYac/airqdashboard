@@ -98,13 +98,13 @@ if uploaded_file is not None:
     
     
     for df in sensor_dfs:
-    display(df.describe())
+        display(df.describe())
 
     for i,df in enumerate(sensor_dfs):
-    display(sensor_location_names[i])
-    display(df.datetime_utc.min(),df.datetime_utc.max())
-    display(df.shape)
-    
+        display(sensor_location_names[i])
+        display(df.datetime_utc.min(),df.datetime_utc.max())
+        display(df.shape)
+        
 
     
     #Check for index duplicates 
@@ -157,61 +157,61 @@ if uploaded_file is not None:
     short_name = ["Butler Creek","Forks Of Salmon","Orleans","Somes_Bar" ]
     for df in sensor_list_df:
         # setting first name as index column
-    df.set_index(["datetime_utc"], inplace = True,append = False, drop = True)
-    df = df.reindex(date_index2)
-    checkna = df['longitude'].isna()
-    print(checkna.value_counts())
+        df.set_index(["datetime_utc"], inplace = True,append = False, drop = True)
+        df = df.reindex(date_index2)
+        checkna = df['longitude'].isna()
+        print(checkna.value_counts())
 
 
     
     for df in sensor_list_df:
         # setting first name as index column
-    df['check'] = (df['ab_deviation_absolute'] > 5.0) & (df['ab_deviation_fraction'] > 0.7)
-    display(df.head())
-    display(df['check'].value_counts())
-    
+        df['check'] = (df['ab_deviation_absolute'] > 5.0) & (df['ab_deviation_fraction'] > 0.7)
+        display(df.head())
+        display(df['check'].value_counts())
+        
 
 
     #set average is NaN if check if True
     for df in sensor_list_df:
     #checking the location where check is True
-    display(df['ab_deviation_OK'].loc[df[df['check']==True].index.values])
-    display(df['pm25_avg'].loc[df[df['check']==True].index.values])
+        display(df['ab_deviation_OK'].loc[df[df['check']==True].index.values])
+        display(df['pm25_avg'].loc[df[df['check']==True].index.values])
     #No need for the code below because the data already had deviation check
     #If not, uncomment the code below
     #df.loc[df.check == True,'pm25_avg'] = np.nan
 
     #EPA correction equation. The PM values were CF Atm. Need to change to PM CF= 1 for better accuracy
     for df in sensor_list_df:
-    df['corrected'] = 0.534*(1*(df['pm25_avg']))-0.0844*df['humidity']+5.604
+        df['corrected'] = 0.534*(1*(df['pm25_avg']))-0.0844*df['humidity']+5.604
     
     for df in sensor_list_df:
-    display(df.head())
+        display(df.head())
 
     
     #scatter plot between the average and corrected pm2.5 concentration
     for i, df in enumerate(sensor_list_df):
     #dataframe with negative corrections
-    df_neg_corrected=df[(df['corrected'] < 0)]
-    df_neg_corrected.plot.scatter('pm25_avg','corrected', title=name_label[i])
+        df_neg_corrected=df[(df['corrected'] < 0)]
+        df_neg_corrected.plot.scatter('pm25_avg','corrected', title=name_label[i])
 
     for i, df in enumerate(sensor_list_df):
     #Changing the negative corrected values to zero
-    df.loc[df.corrected < 0,'corrected'] = 0
-    print(name_label[i],'Negatives Found:')
-    print(df['corrected'].where(df['corrected'] < 0).count())
-    display(df.head())
-    #Change index time from utc to local time (PST)
-    df.index=df.index.tz_localize('UTC')
-    display(df.head())
-    df.index=df.index.tz_convert('US/Pacific')
-    display(df.head())
-    ## Orleans event identification troublshooting 
-    print(df_kdnr_out.head)
-    x = df_kdnr_out.loc['2021-09-06 18:30:00-07:00':'2021-09-09 18:30:00-07:00']
-    y = df_kdnr_out['corrected'].loc['2021-09-06 18:30:00-07:00':'2021-09-09 18:30:00-07:00']
-    temp = (df_kdnr_out['corrected'].loc['2021-09-06 18:30:00-07:00':'2021-09-09 18:30:00-07:00']>150)
-    print(temp.shape)
+        df.loc[df.corrected < 0,'corrected'] = 0
+        print(name_label[i],'Negatives Found:')
+        print(df['corrected'].where(df['corrected'] < 0).count())
+        display(df.head())
+        #Change index time from utc to local time (PST)
+        df.index=df.index.tz_localize('UTC')
+        display(df.head())
+        df.index=df.index.tz_convert('US/Pacific')
+        display(df.head())
+        ## Orleans event identification troublshooting 
+        print(df_kdnr_out.head)
+        x = df_kdnr_out.loc['2021-09-06 18:30:00-07:00':'2021-09-09 18:30:00-07:00']
+        y = df_kdnr_out['corrected'].loc['2021-09-06 18:30:00-07:00':'2021-09-09 18:30:00-07:00']
+        temp = (df_kdnr_out['corrected'].loc['2021-09-06 18:30:00-07:00':'2021-09-09 18:30:00-07:00']>150)
+        print(temp.shape)
 
 
 
@@ -223,33 +223,33 @@ if uploaded_file is not None:
 
     #Using Valerie's Template (For LSAMP and UCLA Poster) 
 
-    i =0 
-    plt.figure(figsize=(15,10))
-    plt.title('July through December, 2021.  3-hour Avg PM2.5 Conc',fontsize = 24,weight = 'bold')
-    plt.xlabel("Date",fontsize=18 ,weight = 'bold')
-    plt.ylabel('PM2.5 micro-grams/${m^3}$',fontsize=18,weight = 'bold')
+        i =0 
+        plt.figure(figsize=(15,10))
+        plt.title('July through December, 2021.  3-hour Avg PM2.5 Conc',fontsize = 24,weight = 'bold')
+        plt.xlabel("Date",fontsize=18 ,weight = 'bold')
+        plt.ylabel('PM2.5 micro-grams/${m^3}$',fontsize=18,weight = 'bold')
 
-    #plt.ylabel(r'PM2.5 micro-grams/$\boldsymbol{m^3}$',fontsize=18,weight = 'bold')
-    plt.xticks(size = 5,rotation=45,fontsize=20) # This was important to limit the number of days displayed on the x axis
-    plt.yticks(size = 5,fontsize=20)
-    plt.tick_params('both', length=20, width=2, which='major')
-    df_temp = pd.DataFrame()
+        #plt.ylabel(r'PM2.5 micro-grams/$\boldsymbol{m^3}$',fontsize=18,weight = 'bold')
+        plt.xticks(size = 5,rotation=45,fontsize=20) # This was important to limit the number of days displayed on the x axis
+        plt.yticks(size = 5,fontsize=20)
+        plt.tick_params('both', length=20, width=2, which='major')
+        df_temp = pd.DataFrame()
     for dfgraph in short_list:
-    df_temp['corrected'] = dfgraph['corrected'].resample('3H').mean()
-    display(df_temp)
-        # Plot the data with Matplotlib Plt
-    x = df_temp['corrected'].loc['2021-01-01':'2021-12-31'].index
-    y = df_temp['corrected'].loc['2021-01-01':'2021-12-31']
-    plt.plot(x,y,label=short_name[i])
-    
-    #plt.title(sensor_location_names[i])
-    i = i +1 
+        df_temp['corrected'] = dfgraph['corrected'].resample('3H').mean()
+        display(df_temp)
+            # Plot the data with Matplotlib Plt
+        x = df_temp['corrected'].loc['2021-01-01':'2021-12-31'].index
+        y = df_temp['corrected'].loc['2021-01-01':'2021-12-31']
+        plt.plot(x,y,label=short_name[i])
+        
+        #plt.title(sensor_location_names[i])
+        i = i +1 
 
-    plt.legend(loc='upper right')
-    plt.rc('legend', fontsize = 20)
+        plt.legend(loc='upper right')
+        plt.rc('legend', fontsize = 20)
 
-    st.pyplot(plt)
-    plt.show()
+        st.pyplot(plt)
+        plt.show()
 
 else:
     st.info("Upload a CSV file to begin.")
