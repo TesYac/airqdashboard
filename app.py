@@ -73,14 +73,14 @@ if uploaded_file is not None:
     df_sawyer = df_dict['CARB_Sawyers_Bar']
     df_forks = df_dict['Forks_Of_Salmon']
     df_kdnr_out = df_dict['KDNR_Outdoor']
-    df_mkwc = df_dict['MKWC_Outdoor']
+    # df_mkwc = df_dict['MKWC_Outdoor']
     df_somesbar = df_dict['SAFE_Somes_Bar']
     df_sandybar = df_dict['SAFE_Sandy_Bar_Creek']
     # df_swillup = df_dict['SAFE_Swillup_Creek']
     # df_swillup.to_csv('C:/Users/embus/Documents/swillup_creek_aq_21.csv')
     df_happy_camp_cc.head()
     df_butler.head()
-    df_mkwc.head()
+    # df_mkwc.head()
     #Create sensor location names for later use in graphs 
     sensor_location_names = ["Butler_Creek","CARB_Cecilville",
     "SAFE_Happy_Camp_Community_Center","CARB_Sawyer","Forks_Of_Salmon","Orleans_KDNR_Outdoor","SAFE_Somes_Bar","SAFE_Sandy_Bar_Creek"]
