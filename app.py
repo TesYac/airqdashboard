@@ -1,5 +1,8 @@
 import streamlit as st
 import pandas as pd
+from datetime import datetime 
+from datetime import timedelta 
+import matplotlib.pyplot as plt
 
 st.set_page_config(
     page_title="My Data App",
@@ -148,10 +151,10 @@ if uploaded_file is not None:
 
     #reindex - generate 15 minute interval time index
 
-    sensor_list_df =  (df_butler,df_cecilville,df_happy_camp_cc,df_sawyer,df_forks,df_kdnr_out,df_somesbar,df_sandybar,df_swillup)
+    sensor_list_df =  (df_butler,df_cecilville,df_happy_camp_cc,df_sawyer,df_forks,df_kdnr_out,df_somesbar,df_sandybar)
 
     date_index2 = pd.date_range('2021/07/01', periods=17664, freq='15T')
-    sensor_list_gf = (df_butler,df_cecilville,df_happy_camp_cc,df_sawyer,df_forks,df_kdnr_out,df_somesbar,df_sandybar,df_swillup)
+    sensor_list_gf = (df_butler,df_cecilville,df_happy_camp_cc,df_sawyer,df_forks,df_kdnr_out,df_somesbar,df_sandybar)
     name_label = ["Butler_Creek","CARB_Cecilville",
     "SAFE_Happy_Camp_Community_Center","CARB_Sawyer","Forks_Of_Salmon","Orleans_KDNR_Outdoor","SAFE_Somes_Bar","SAFE_Sandy_Bar_Creek","SAFE_Swillup_Creek"]
     short_list = (df_butler, df_forks,df_kdnr_out,df_somesbar)
@@ -168,16 +171,16 @@ if uploaded_file is not None:
     for df in sensor_list_df:
         # setting first name as index column
         df['check'] = (df['ab_deviation_absolute'] > 5.0) & (df['ab_deviation_fraction'] > 0.7)
-        display(df.head())
-        display(df['check'].value_counts())
+        print(df.head())
+        print(df['check'].value_counts())
         
 
 
     #set average is NaN if check if True
     for df in sensor_list_df:
     #checking the location where check is True
-        display(df['ab_deviation_OK'].loc[df[df['check']==True].index.values])
-        display(df['pm25_avg'].loc[df[df['check']==True].index.values])
+        print(df['ab_deviation_OK'].loc[df[df['check']==True].index.values])
+        print(df['pm25_avg'].loc[df[df['check']==True].index.values])
     #No need for the code below because the data already had deviation check
     #If not, uncomment the code below
     #df.loc[df.check == True,'pm25_avg'] = np.nan
@@ -187,7 +190,7 @@ if uploaded_file is not None:
         df['corrected'] = 0.534*(1*(df['pm25_avg']))-0.0844*df['humidity']+5.604
     
     for df in sensor_list_df:
-        display(df.head())
+        print(df.head())
 
     
     #scatter plot between the average and corrected pm2.5 concentration
@@ -201,12 +204,12 @@ if uploaded_file is not None:
         df.loc[df.corrected < 0,'corrected'] = 0
         print(name_label[i],'Negatives Found:')
         print(df['corrected'].where(df['corrected'] < 0).count())
-        display(df.head())
+        print(df.head())
         #Change index time from utc to local time (PST)
         df.index=df.index.tz_localize('UTC')
-        display(df.head())
+        print(df.head())
         df.index=df.index.tz_convert('US/Pacific')
-        display(df.head())
+        print(df.head())
         ## Orleans event identification troublshooting 
         print(df_kdnr_out.head)
         x = df_kdnr_out.loc['2021-09-06 18:30:00-07:00':'2021-09-09 18:30:00-07:00']
@@ -237,7 +240,7 @@ if uploaded_file is not None:
         df_temp = pd.DataFrame()
     for dfgraph in short_list:
         df_temp['corrected'] = dfgraph['corrected'].resample('3H').mean()
-        display(df_temp)
+        print(df_temp)
             # Plot the data with Matplotlib Plt
         x = df_temp['corrected'].loc['2021-01-01':'2021-12-31'].index
         y = df_temp['corrected'].loc['2021-01-01':'2021-12-31']
