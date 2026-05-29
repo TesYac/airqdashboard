@@ -98,13 +98,13 @@ if uploaded_file is not None:
         
     
     
-    for df in sensor_dfs:
-        display(df.describe())
+    for item in sensor_dfs:
+        print(item.describe())
 
     for i,df in enumerate(sensor_dfs):
-        display(sensor_location_names[i])
-        display(df.datetime_utc.min(),df.datetime_utc.max())
-        display(df.shape)
+        print(sensor_location_names[i])
+        print(df.datetime_utc.min(),df.datetime_utc.max())
+        print(df.shape)
         
 
     
