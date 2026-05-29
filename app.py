@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime 
 from datetime import timedelta 
 import matplotlib.pyplot as plt
+import pytz
 
 st.set_page_config(
     page_title="My Data App",
@@ -211,11 +212,7 @@ if uploaded_file is not None:
         df.index=df.index.tz_convert('US/Pacific')
         print(df.head())
         ## Orleans event identification troublshooting 
-        print(df_kdnr_out.head)
-        x = df_kdnr_out.loc['2021-09-06 18:30:00-07:00':'2021-09-09 18:30:00-07:00']
-        y = df_kdnr_out['corrected'].loc['2021-09-06 18:30:00-07:00':'2021-09-09 18:30:00-07:00']
-        temp = (df_kdnr_out['corrected'].loc['2021-09-06 18:30:00-07:00':'2021-09-09 18:30:00-07:00']>150)
-        print(temp.shape)
+      
 
 
 
