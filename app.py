@@ -37,7 +37,8 @@ if uploaded_file is not None:
     if selected_columns:
         st.dataframe(df[selected_columns])
 
-    df_main = pd.copy(df)
+    import copy
+    df_main = copy.deepcopy(df)
     #########################################################
     #########################################################
     #########################################################
