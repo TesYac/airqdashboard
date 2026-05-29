@@ -153,7 +153,7 @@ if uploaded_file is not None:
 
     sensor_list_df =  (df_butler,df_cecilville,df_happy_camp_cc,df_sawyer,df_forks,df_kdnr_out,df_somesbar,df_sandybar)
 
-    date_index2 = pd.date_range('2021/07/01', periods=17664, freq='15T')
+    date_index2 = pd.date_range('2021/07/01', periods=17664, freq='15min')
     sensor_list_gf = (df_butler,df_cecilville,df_happy_camp_cc,df_sawyer,df_forks,df_kdnr_out,df_somesbar,df_sandybar)
     name_label = ["Butler_Creek","CARB_Cecilville",
     "SAFE_Happy_Camp_Community_Center","CARB_Sawyer","Forks_Of_Salmon","Orleans_KDNR_Outdoor","SAFE_Somes_Bar","SAFE_Sandy_Bar_Creek","SAFE_Swillup_Creek"]
