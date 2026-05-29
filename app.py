@@ -236,7 +236,7 @@ if uploaded_file is not None:
         plt.tick_params('both', length=20, width=2, which='major')
         df_temp = pd.DataFrame()
     for dfgraph in short_list:
-        df_temp['corrected'] = dfgraph['corrected'].resample('3H').mean()
+        df_temp['corrected'] = dfgraph['corrected'].resample('3h').mean()
         print(df_temp)
             # Plot the data with Matplotlib Plt
         x = df_temp['corrected'].loc['2021-01-01':'2021-12-31'].index
