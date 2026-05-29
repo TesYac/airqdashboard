@@ -65,8 +65,8 @@ if uploaded_file is not None:
     df_dict.keys()
 
     #Split Data Frames Using the Dictionary
-    df_blr = df_dict['BLR_Water_Barn']
-    df_blc = df_dict['Blue_Lake_City']
+    # df_blr = df_dict['BLR_Water_Barn']
+    # df_blc = df_dict['Blue_Lake_City']
     df_butler = df_dict['Butler_Creek']
     df_cecilville = df_dict['CARB_Cecilville']
     df_happy_camp_cc = df_dict['SAFE_Happy_Camp_Community_Center']
@@ -76,19 +76,19 @@ if uploaded_file is not None:
     df_mkwc = df_dict['MKWC_Outdoor']
     df_somesbar = df_dict['SAFE_Somes_Bar']
     df_sandybar = df_dict['SAFE_Sandy_Bar_Creek']
-    df_swillup = df_dict['SAFE_Swillup_Creek']
-    df_swillup.to_csv('C:/Users/embus/Documents/swillup_creek_aq_21.csv')
+    # df_swillup = df_dict['SAFE_Swillup_Creek']
+    # df_swillup.to_csv('C:/Users/embus/Documents/swillup_creek_aq_21.csv')
     df_happy_camp_cc.head()
     df_butler.head()
     df_mkwc.head()
     #Create sensor location names for later use in graphs 
     sensor_location_names = ["Butler_Creek","CARB_Cecilville",
-    "SAFE_Happy_Camp_Community_Center","CARB_Sawyer","Forks_Of_Salmon","Orleans_KDNR_Outdoor","SAFE_Somes_Bar","SAFE_Sandy_Bar_Creek","SAFE_Swillup_Creek"]
+    "SAFE_Happy_Camp_Community_Center","CARB_Sawyer","Forks_Of_Salmon","Orleans_KDNR_Outdoor","SAFE_Somes_Bar","SAFE_Sandy_Bar_Creek"]
     sensor_location_names[0]
 
     #create a list of the needed data frames from the ones selected 
 
-    sensor_dfs = (df_swillup, df_butler,df_cecilville,df_happy_camp_cc,df_sawyer,df_forks,df_kdnr_out,df_somesbar,df_sandybar)
+    sensor_dfs = (df_butler,df_cecilville,df_happy_camp_cc,df_sawyer,df_forks,df_kdnr_out,df_somesbar,df_sandybar)
 
 
 
