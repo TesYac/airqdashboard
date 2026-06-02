@@ -149,6 +149,12 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     # TY Printing
                     print('File Name')
                     print(filename)
+                    st.download_button(
+                    label="Download CSV",
+                    # data=csv,
+                    file_name=filename,
+                    mime="text/csv"
+                    )
 
 bdate = '2024-08-01T00:00:00-07:00'
 edate = '2024-08-02T00:00:00-07:00'
@@ -157,9 +163,3 @@ sensors_list = ['11344']
 param_list = ['humidity','temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b']
 average_time = 30
 get_historicaldata(sensors_list, param_list, bdate,edate,average_time,key_read)
-st.download_button(
-    label="Download CSV",
-    data=csv,
-    file_name=filename,
-    mime="text/csv"
-)
