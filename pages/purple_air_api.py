@@ -120,10 +120,10 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
 
                 except AssertionError:
                     df = pd.DataFrame()
-                    print('Bad URL!')
+                    st.error('Bad URL!')
 
                 if df.empty:
-                    print('------------- No Data Available -------------')
+                    st.info('------------- No Data Available -------------')
                 else:
                     #Adding Sensor Index/ID
                     df['label'] = sensor_name # TY  modified this line to add the sensor name
@@ -134,11 +134,12 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     # Writing to Postgres Table (Optional)
                     #      If you dont want to save to PostgreSQL then comment line 22, 78, and 173
                     #df.to_sql('tablename', con=engine, if_exists='append', index=False)
-
+                    st.info(df.head())
                     # writing to csv file
                     #folderpath = '/Documents/VSC_AirQual/' - Defined at top
                     #filename = folderpath + '/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d)
-                    filename = folderpath + '/sensorsID_%s_%s.csv' % (date_list[0][0:10],date_list[-1][0:10])
+                    sensorsID = s
+                    filename = '/%s_%s_%s.csv' % (sensorsID,date_list[0][0:10],date_list[-1][0:10])
                     #filename = os.path.join(folderpath,r'/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d))
                     print(filename)
                     if (i==0):
@@ -156,3 +157,9 @@ sensors_list = ['11886']
 param_list = ['humidity','temperature', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b']
 average_time = 30
 get_historicaldata(sensors_list, param_list, bdate,edate,average_time,key_read)
+st.download_button(
+    label="Download CSV",
+    data=csv,
+    file_name=filename,
+    mime="text/csv"
+)
