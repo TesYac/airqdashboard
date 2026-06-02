@@ -11,13 +11,13 @@ from io import StringIO
 
 #V K API Data Retrieval V2
 # -*- coding: utf-8 -*-
-"""
-This code gets hisotrical PurpleAir data of one site at a time and
-for two days ONLY from new PurpleAir API.
-Data from the site are in bytes/text and NOT in JSON format.
-Created on Fri Jun 10 21:34:01 2022
-@author: Zuber Farooqui, Ph.D.
-"""
+####
+#This code gets hisotrical PurpleAir data of one site at a time and
+#for two days ONLY from new PurpleAir API.
+#Data from the site are in bytes/text and NOT in JSON format.
+#Created on Fri Jun 10 21:34:01 2022
+#@author: Zuber Farooqui, Ph.D.
+####
 #Python version of the API download function modified by VK from Dr.Zuber Farooqui's code
 #Edited for Streamlit by TY 
 st.title("Download Purple Air Data using an API")
@@ -35,8 +35,8 @@ sensors_list = st.text_input("Enter one or multiple sensor index values. If mult
 if sensors_list:
     try:
         numbers = [float(x.strip()) for x in sensors_list.split(",")]
-        st.success("Numbers received!")
-        st.write(numbers)
+        # st.success("Numbers received!")
+        # st.write(numbers)
     except ValueError:
         st.error("Please enter only numbers separated by commas.")
 
@@ -55,7 +55,21 @@ end_date = st.date_input(
 
 st.write(f"You selected an end date of :**{end_date}**")
 
-
+available_fields = [humidity, temperature, pressure, pm2.5_cf_1_a, pm2.5_cf_1_b, name, latitude, longitude, humidity_a, 
+                    humidity_b,  temperature_a, temperature_b, 
+                     pressure_a, pressure_b, pm1.0, pm1.0_a, pm1.0_b, pm1.0_atm, pm1.0_atm_a, 
+                    pm1.0_atm_b, pm1.0_cf_1, pm1.0_cf_1_a, pm1.0_cf_1_b, pm2.5_alt, pm2.5_alt_a, pm2.5_alt_b, pm2.5, 
+                    pm2.5_a, pm2.5_b, pm2.5_atm, pm2.5_atm_a, pm2.5_atm_b, pm2.5_cf_1, pm10.0_cf_1, pm10.0_cf_1_a, 
+                    pm10.0_cf_1_b, icon, model, hardware, location_type, private, altitude, 
+                    position_rating, led_brightness, firmware_version, firmware_upgrade, rssi, uptime, pa_latency, 
+                    memory, last_seen, last_modified, date_created, channel_state, channel_flags, channel_flags_manual,
+                    channel_flags_auto, confidence, confidence_manual, confidence_auto]
+st.subheader("Select Parameters to Download")
+field_list = st.multiselect(
+    "Choose columns to display",
+    available_fields,
+    default=available_fields[:5]
+)
 
 def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read):
     st.write('I am in the function')
