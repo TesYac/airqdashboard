@@ -65,12 +65,15 @@ available_fields = ['humidity', 'temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.
                     'channel_flags_manual','channel_flags_auto', 'confidence', 'confidence_manual', 'confidence_auto']
 
 st.subheader("Select Parameters to Download")
+st.write("Note that the recommended five parameters have already been selected by default")
 
 field_list = st.multiselect(
     "Choose columns to display",
     available_fields,
     default=available_fields[:5]
 )
+
+st.write(f'You have selected the following fields: **{field_list}**')
 
 def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read):
     st.write('I am in the function')
