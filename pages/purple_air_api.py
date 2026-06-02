@@ -55,15 +55,14 @@ end_date = st.date_input(
 
 st.write(f"You selected an end date of :**{end_date}**")
 
-available_fields = [humidity, temperature, pressure, pm2.5_cf_1_a, pm2.5_cf_1_b, name, latitude, longitude, humidity_a, 
-                    humidity_b,  temperature_a, temperature_b, 
-                    pressure_a, pressure_b, pm1.0, pm1.0_a, pm1.0_b, pm1.0_atm, pm1.0_atm_a, 
-                    pm1.0_atm_b, pm1.0_cf_1, pm1.0_cf_1_a, pm1.0_cf_1_b, pm2.5_alt, pm2.5_alt_a, pm2.5_alt_b, pm2.5, 
-                    pm2.5_a, pm2.5_b, pm2.5_atm, pm2.5_atm_a, pm2.5_atm_b, pm2.5_cf_1, pm10.0_cf_1, pm10.0_cf_1_a, 
-                    pm10.0_cf_1_b, icon, model, hardware, location_type, private, altitude, 
-                    position_rating, led_brightness, firmware_version, firmware_upgrade, rssi, uptime, pa_latency, 
-                    memory, last_seen, last_modified, date_created, channel_state, channel_flags, channel_flags_manual,
-                    channel_flags_auto, confidence, confidence_manual, confidence_auto]
+available_fields = ['humidity', 'temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b', 'name', 'latitude', 'longitude',
+                    'humidity_a', 'humidity_b', 'temperature_a', 'temperature_b','pressure_a', 'pressure_b','pm1.0','pm1.0_a',
+                    'pm1.0_b','pm1.0_atm', 'pm1.0_atm_a','pm1.0_atm_b', 'pm1.0_cf_1', 'pm1.0_cf_1_a', 'pm1.0_cf_1_b', 'pm2.5_alt',
+                    'pm2.5_alt_a', 'pm2.5_alt_b', 'pm2.5','pm2.5_a', 'pm2.5_b', 'pm2.5_atm', 'pm2.5_atm_a', 'pm2.5_atm_b', 
+                    'pm2.5_cf_1', 'pm10.0_cf_1','pm10.0_cf_1_a','pm10.0_cf_1_b', 'icon','model','hardware', 'location_type',
+                    'private', 'altitude', 'position_rating', 'led_brightness', 'firmware_version', 'firmware_upgrade', 'rssi', 
+                    'uptime', 'pa_latency', 'memory', 'last_seen', 'last_modified', 'date_created', 'channel_state', 'channel_flags', 
+                    'channel_flags_manual','channel_flags_auto', 'confidence', 'confidence_manual', 'confidence_auto']
 
 st.subheader("Select Parameters to Download")
 
