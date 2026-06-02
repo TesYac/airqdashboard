@@ -136,27 +136,27 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     # Writing to Postgres Table (Optional)
                     #      If you dont want to save to PostgreSQL then comment line 22, 78, and 173
                     #df.to_sql('tablename', con=engine, if_exists='append', index=False)
-                    st.info(df.head())
+                    st.write(df.head())
                     # writing to csv file
                     #folderpath = '/Documents/VSC_AirQual/' - Defined at top
                     #filename = folderpath + '/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d)
                     sensorsID = s
                     filename = '/%s_%s_%s.csv' % (sensorsID,date_list[0][0:10],date_list[-1][0:10])
                     #filename = os.path.join(folderpath,r'/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d))
-                    print(filename)
-                    if (i==0):
-                        df.to_csv(filename, index=False, header=True)
-                    else:
-                        df.to_csv(filename, mode='a', index=False, header=False) # Revert back to True
-                    # TY Printing
-                    print('File Name')
-                    print(filename)
-                    st.download_button(
-                    label="Download CSV",
-                    # data=csv,
-                    file_name=filename,
-                    mime="text/csv"
-                    )
+                    st.write(f'File name {filename}')
+                    # if (i==0):
+                    #     df.to_csv(filename, index=False, header=True)
+                    # else:
+                    #     df.to_csv(filename, mode='a', index=False, header=False) # Revert back to True
+                    # # TY Printing
+                    # print('File Name')
+                    # print(filename)
+                    # st.download_button(
+                    # label="Download CSV",
+                    # # data=csv,
+                    # file_name=filename,
+                    # mime="text/csv"
+                    # )
 
 bdate = '2024-08-01T00:00:00-07:00'
 edate = '2024-08-03T00:00:00-07:00'
