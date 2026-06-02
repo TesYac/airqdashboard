@@ -31,9 +31,17 @@ key_read = st.text_input(
 if key_read:
     st.success("API key received!")
 
+start_date = st.date_input(
+    "Select a start date for the download."
+)
 
+st.write("You selected:", start_date)
 
+end_date = st.date_input(
+    "Select an end date for the download."
+)
 
+st.write("You selected:", end_date)
 
 
 
@@ -141,7 +149,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     #folderpath = '/Documents/VSC_AirQual/' - Defined at top
                     #filename = folderpath + '/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d)
                     sensorsID = s
-                    filename = '/%s_%s_%s.csv' % (sensorsID,date_list[0][0:10],date_list[-1][0:10])
+                    filename = '%s_%s_%s.csv' % (sensorsID,date_list[0][0:10],date_list[-1][0:10])
                     #filename = os.path.join(folderpath,r'/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d))
                     st.write(f'File name {filename}')
                     # if (i==0):
@@ -164,4 +172,4 @@ sensor_name = 'Montague'
 sensors_list = ['11344']
 param_list = ['humidity','temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b']
 average_time = 30
-get_historicaldata(sensors_list, param_list, bdate,edate,average_time,key_read)
+# get_historicaldata(sensors_list, param_list, bdate,edate,average_time,key_read)
