@@ -31,17 +31,29 @@ key_read = st.text_input(
 if key_read:
     st.success("API key received!")
 
+sensors_list = st.text_input("Enter one or multiple sensor index values. If multiple, separate by a comma")
+if sensors_list:
+    try:
+        numbers = [float(x.strip()) for x in sensors_list.split(",")]
+        st.success("Numbers received!")
+        st.write(numbers)
+    except ValueError:
+        st.error("Please enter only numbers separated by commas.")
+
+st.write(f"You have entered these sensor indexes: **{sensors_list}**")
+
+
 start_date = st.date_input(
     "Select a start date for the download."
 )
 
-st.write("You selected:", start_date)
+st.write(f"You selected a start date of: **{start_date}**")
 
 end_date = st.date_input(
     "Select an end date for the download."
 )
 
-st.write("You selected:", end_date)
+st.write(f"You selected an end date of :**{end_date}**")
 
 
 
