@@ -6,7 +6,7 @@ import time
 import json
 import os
 from io import StringIO
-from sqlalchemy import create_engine
+# from sqlalchemy import create_engine
 
 
 #V K API Data Retrieval V2
