@@ -150,11 +150,11 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     print('File Name')
                     print(filename)
 
-bdate = '2022-09-01T00:00:00+00:00'
-edate = '2022-10-01T23:30:00+00:00'
-sensor_name = 'Cecilville'
-sensors_list = ['11886']
-param_list = ['humidity','temperature', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b']
+bdate = '2024-08-01T00:00:00-07:00'
+edate = '2024-08-02T00:00:00-07:00'
+sensor_name = 'Montague'
+sensors_list = ['11344']
+param_list = ['humidity','temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b']
 average_time = 30
 get_historicaldata(sensors_list, param_list, bdate,edate,average_time,key_read)
 st.download_button(
