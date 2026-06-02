@@ -38,7 +38,7 @@ if key_read:
 
 
 def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read):
-
+    st.write('I am in the function')
     # Sleep Seconds
     sleep_seconds = 3 # wait sleep_seconds after each query
 
@@ -91,6 +91,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     len_datelist = len(date_list) - 1
     print(len_datelist)
     # Getting 2-data for one sensor at a time
+    st.write('Got to the main loop of the function')
     for s in sensors_list:
         # Adding sensor_index & API Key
         hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
@@ -125,6 +126,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                 if df.empty:
                     st.info('------------- No Data Available -------------')
                 else:
+                    st.write('Made it to the else statement')
                     #Adding Sensor Index/ID
                     df['label'] = sensor_name # TY  modified this line to add the sensor name
 
@@ -157,7 +159,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     )
 
 bdate = '2024-08-01T00:00:00-07:00'
-edate = '2024-08-02T00:00:00-07:00'
+edate = '2024-08-03T00:00:00-07:00'
 sensor_name = 'Montague'
 sensors_list = ['11344']
 param_list = ['humidity','temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b']
