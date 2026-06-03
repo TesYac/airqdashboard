@@ -57,7 +57,7 @@ end_date = st.date_input(
 
 st.write(f"You selected an end date of :**{end_date}**")
 
-formatted_start = start_date.replace(tzinfo=ZoneInfo("US/Pacific"))
+formatted_start = start_date.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
 
 formatted_start = formatted_start.isoformat()
 
