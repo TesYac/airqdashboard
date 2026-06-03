@@ -55,6 +55,14 @@ end_date = st.date_input(
 
 st.write(f"You selected an end date of :**{end_date}**")
 
+
+dt = datetime.strptime(start_date, "%Y-%m-%d")
+dt = dt.replace(tz=("US/Pacific"))
+
+
+formatted_start = dt.isoformat()
+ts.write(f'Start time: {formatted_start}')
+
 available_fields = ['humidity', 'temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b', 'name', 'latitude', 'longitude',
                     'humidity_a', 'humidity_b', 'temperature_a', 'temperature_b','pressure_a', 'pressure_b','pm1.0','pm1.0_a',
                     'pm1.0_b','pm1.0_atm', 'pm1.0_atm_a','pm1.0_atm_b', 'pm1.0_cf_1', 'pm1.0_cf_1_a', 'pm1.0_cf_1_b', 'pm2.5_alt',
