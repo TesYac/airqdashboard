@@ -62,7 +62,9 @@ st.write(f"You selected an end date of :**{end_date}**")
 st.write(f'Type of time: {type(start_date)}')
 
 tzinfo=pytz.timezone("US/Pacific")
-formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0, tzinfo)
+st.write(tzinfo)
+formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0, tzinfo = tzinfo)
+
 # formatted_start = start_date.astimezone(timezone("America/Los_Angeles")) 
 st.write(formatted_start)
 formatted_start = formatted_start.isoformat()
