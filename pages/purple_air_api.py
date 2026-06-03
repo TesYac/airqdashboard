@@ -155,9 +155,10 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     print(len_datelist)
     # Getting 2-data for one sensor at a time
     st.write('Got to the main loop of the function')
-    for item in sensors_list:
+    st.write(sensors_list)
+    for s in sensors_list:
         # Adding sensor_index & API Key
-        st.write(item)
+        st.write(s)
         return 
         hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
         print(hist_api_url)
