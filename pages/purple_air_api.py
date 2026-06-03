@@ -125,11 +125,12 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     print(f'begin date', {begindate})
     print(f'end date',{enddate} )
 
-    # Downlaod days based on average
-    if (average_time == 60):
-        datelist = pd.date_range(begindate,enddate,freq='14d') # for 14 days of data
-    else:
-        datelist = pd.date_range(begindate,enddate,freq='2d') # for 2 days of data
+    # Downlaod days based on average duration requestd. These correspond to the available_averages.
+    max_duration_list = ['180d','30d','60d','90d','1y','2y','5y','20y','100y']
+    max_duration = max_duration_list[available_averages.index(average_time)]
+
+    #Generate a date list if max_duration < enddate - begindate +1
+    datelist = pd.date_range(begindate,enddate,freq=max_duration) # 
     # TY Printing
     st.write('Unformatted datelist')
     st.write(datelist)
@@ -224,7 +225,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     # # data=csv,
                     # file_name=filename,
                     # mime="text/csv"
-        st.write(df_total.tail())           # )
+        st.write(df_total.tail())          
 
 #Style for button
 st.markdown("""
