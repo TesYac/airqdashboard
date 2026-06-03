@@ -159,7 +159,6 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     for s in sensors_list:
         # Adding sensor_index & API Key
         st.write(s)
-        return 
         hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
         print(hist_api_url)
         # Creating start and end date api url
