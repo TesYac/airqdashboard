@@ -226,13 +226,11 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     # # TY Printing
                     # print('File Name')
                     # print(filename)
-                    # st.download_button(
-                    # label="Download CSV",
-                    # # data=csv,
-                    # file_name=filename,
-                    # mime="text/csv"
-        # st.write(df_total.tail())          
 
+        st.write(df_total.tail())
+        csv = df_total.to_csv(filename, index=False, header=False)        
+        st.download_button("Download CSV for sensor {s}",csv, "{filename}.csv", "text/csv", key = 'download-csv')
+ 
 #Style for button
 st.markdown("""
 <style>
