@@ -62,11 +62,12 @@ zone_input = st.selectbox(f'**{'Choose the Timezone'}**', time_options)
 #Add time zone and format to iso conversion for inclusion in the API call
 #Start time
 formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
-st.write(formatted_start)
 formatted_start = formatted_start.isoformat()
+st.write(formatted_start)
 #End time - adds one day to ensure full download for the last day
 end_date = end_date + timedelta(days=1)
 formatted_end = datetime(end_date.year, end_date.month, end_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
+formatted_end = formatted_end.isoformat()
 st.write(formatted_end)
 
 #Setup parameter (field) selection for API call
