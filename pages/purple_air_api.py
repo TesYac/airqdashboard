@@ -169,7 +169,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
             if (i!=0):
                 time.sleep(sleep_seconds)
             if (i < len_datelist):
-                st.write('Downloading for PA: %s for Dates: %s and %s.' %(s,date_list[i+1],d))
+                st.write('Downloading for PA: %s for Dates: %s and %s.' %(s,date_list[i],d))
                 dates_api_url = f'&start_timestamp={d}&end_timestamp={date_list[i+1]}'
                 # Final API URL
                 api_url = hist_api_url + dates_api_url + average_api + fields_api_url
