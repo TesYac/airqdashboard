@@ -98,6 +98,7 @@ selected_average = st.selectbox(f'**{'Choose the averaging period for the downlo
 
 def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read):
     st.write('I am in the function')
+    st.write(f'Sensors List: {sensors_list}')
     # Sleep Seconds
     sleep_seconds = 3 # wait sleep_seconds after each query
 
@@ -132,7 +133,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     # TY Printing
     st.write('Unformatted datelist')
     st.write(datelist)
-
+    date_list = datetime.fromisoformat(date_list)
     # Reversing to get data from end date to start date
     datelist = datelist.tolist()
     #datelist.reverse()
@@ -142,9 +143,9 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
 
     # Converting to PA required format
     date_list=[]
-    for dt in datelist:
-        dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +'Z'
-        date_list.append(dd)
+    # for dt in datelist:
+    #     dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +'Z'
+    #     date_list.append(dd)
     # TY Printing
     st.write(f'formatted date list')
     st.write(date_list)
