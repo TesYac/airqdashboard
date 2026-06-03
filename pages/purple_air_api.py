@@ -194,7 +194,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                 else:
                     st.write('Made it to the else statement')
                     #Adding Sensor Index/ID
-                    df['label'] = sensor_name # TY  modified this line to add the sensor name
+                    # df['label'] = sensor_name # TY  modified this line to add the sensor name
 
                     #Dropping duplicate rows
                     df = df.drop_duplicates(subset=None, keep='first', inplace=False)
