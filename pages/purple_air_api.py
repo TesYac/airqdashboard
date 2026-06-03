@@ -225,7 +225,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     # # data=csv,
                     # file_name=filename,
                     # mime="text/csv"
-        st.write(df_total.tail())          
+        # st.write(df_total.tail())          
 
 #Style for button
 st.markdown("""
