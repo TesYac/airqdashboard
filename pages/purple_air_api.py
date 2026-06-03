@@ -115,8 +115,10 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
             fields_api_url += f'%2C{f}'
 
     # Dates of Historical Data period
-    begindate = datetime.fromisoformat(bdate)
-    enddate   = datetime.fromisoformat(edate)
+    # begindate = datetime.fromisoformat(bdate)
+    begindate = bdate
+    # enddate   = datetime.fromisoformat(edate)
+    enddate = edate
     # TY Printing
     print(f'begin date', {begindate})
     print(f'end date',{enddate} )
@@ -233,7 +235,7 @@ div.stButton > button:hover {
 
 #Call the API to get the data 
 if st.button(f"**{'Call the API to get the Data'}**"):
-    get_historicaldata(sensors_list,field_list,start_date,end_date,selected_average,key_read)
+    get_historicaldata(sensors_list,field_list,formatted_start,formatted_end,selected_average,key_read)
 
 
 
