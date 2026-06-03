@@ -7,6 +7,7 @@ import json
 import os
 from io import StringIO
 from zoneinfo import ZoneInfo
+import pytz
 from pytz import timezone
 
 # from sqlalchemy import create_engine
@@ -60,7 +61,9 @@ st.write(f"You selected an end date of :**{end_date}**")
 
 st.write(f'Type of time: {type(start_date)}')
 
-formatted_start = start_date.astimezone(timezone("America/Los_Angeles")) 
+tzinfo=pytz.timezone('America/Los_Angeles')
+formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0, tzinfo)
+# formatted_start = start_date.astimezone(timezone("America/Los_Angeles")) 
 
 formatted_start = formatted_start.isoformat()
 
