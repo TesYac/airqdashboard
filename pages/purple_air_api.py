@@ -35,11 +35,11 @@ key_read = st.text_input(
 if key_read:
     st.success("API key received!")
 
-sensors_list = st.text_input("Enter one or multiple sensor index values. If multiple, separate by a comma")
-if sensors_list:
+sensors_list_input = st.text_input("Enter one or multiple sensor index values. If multiple, separate by a comma")
+if sensors_list_input:
     try:
-        numbers = [float(x.strip()) for x in sensors_list.split(",")]
-        st.write(f"You have entered these sensor indexes: **{sensors_list}**")
+        list_sensors = [float(x.strip()) for x in sensors_list_input.split(",")]
+        st.write(f"You have entered these sensor indexes: **{list_sensors}**")
     except ValueError:
         st.error("Please enter only numbers separated by commas.")
 
@@ -242,7 +242,7 @@ div.stButton > button:hover {
 
 #Call the API to get the data 
 if st.button(f"**{'Call the API to get the Data'}**"):
-    get_historicaldata(sensors_list,field_list,formatted_start,formatted_end,selected_average,key_read)
+    get_historicaldata(list_sensors,field_list,formatted_start,formatted_end,selected_average,key_read)
 
 
 
