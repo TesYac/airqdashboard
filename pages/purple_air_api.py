@@ -92,7 +92,7 @@ st.write(f'You have selected the following fields: **{field_list}**')
 #Setup average time input for the API call
 #All in minutes
 available_averages = [60, 0,10,30,360,1440,10080,43200,525600]
-available_averages = st.selectbox(f'**{'Choose the averaging period for the download. All are in minutes. 0 represents real time.'}**', time_options)
+selected_average = st.selectbox(f'**{'Choose the averaging period for the download. All are in minutes. 0 represents real time.'}**', available_averages)
 
 
 def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read):
