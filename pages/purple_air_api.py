@@ -7,6 +7,7 @@ import json
 import os
 from io import StringIO
 from zoneinfo import ZoneInfo
+from pytz import timezone
 
 # from sqlalchemy import create_engine
 
@@ -57,7 +58,7 @@ end_date = st.date_input(
 
 st.write(f"You selected an end date of :**{end_date}**")
 
-formatted_start = start_date.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+formatted_start = start_date.astimezone(timezone("America/Los_Angeles")) 
 
 formatted_start = formatted_start.isoformat()
 
