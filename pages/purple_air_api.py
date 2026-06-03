@@ -58,6 +58,8 @@ end_date = st.date_input(
 
 st.write(f"You selected an end date of :**{end_date}**")
 
+st.write(f'Type of time: {type(start_date)}')
+
 formatted_start = start_date.astimezone(timezone("America/Los_Angeles")) 
 
 formatted_start = formatted_start.isoformat()
