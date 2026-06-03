@@ -130,7 +130,8 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     else:
         datelist = pd.date_range(begindate,enddate,freq='2d') # for 2 days of data
     # TY Printing
-    print(datelist)
+    st.write('Unformatted datelist')
+    st.write(datelist)
 
     # Reversing to get data from end date to start date
     datelist = datelist.tolist()
@@ -155,6 +156,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     st.write('Got to the main loop of the function')
     for s in sensors_list:
         # Adding sensor_index & API Key
+        st.write(s)
         hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
         print(hist_api_url)
         # Creating start and end date api url
