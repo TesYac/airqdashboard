@@ -133,7 +133,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     # TY Printing
     st.write('Unformatted datelist')
     st.write(datelist)
-    datelist = datetime.fromisoformat(datelist)
+    # datelist = datetime.fromisoformat(datelist)
     # Reversing to get data from end date to start date
     datelist = datelist.tolist()
     #datelist.reverse()
@@ -143,9 +143,9 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
 
     # Converting to PA required format
     date_list=[]
-    # for dt in datelist:
-    #     dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +'Z'
-    #     date_list.append(dd)
+    for dt in datelist:
+        dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +dt.strftime(%Z)
+        date_list.append(dd)
     # TY Printing
     st.write(f'formatted date list')
     st.write(date_list)
@@ -158,6 +158,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     for s in sensors_list:
         # Adding sensor_index & API Key
         st.write(s)
+        return 
         hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
         print(hist_api_url)
         # Creating start and end date api url
