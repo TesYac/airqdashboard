@@ -133,7 +133,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     # TY Printing
     st.write('Unformatted datelist')
     st.write(datelist)
-    date_list = datetime.fromisoformat(date_list)
+    datelist = datetime.fromisoformat(datelist)
     # Reversing to get data from end date to start date
     datelist = datelist.tolist()
     #datelist.reverse()
