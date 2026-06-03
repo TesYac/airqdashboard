@@ -39,14 +39,11 @@ sensors_list = st.text_input("Enter one or multiple sensor index values. If mult
 if sensors_list:
     try:
         numbers = [float(x.strip()) for x in sensors_list.split(",")]
-        # st.success("Numbers received!")
-        # st.write(numbers)
+        st.write(f"You have entered these sensor indexes: **{sensors_list}**")
     except ValueError:
         st.error("Please enter only numbers separated by commas.")
 
-st.write(f"You have entered these sensor indexes: **{sensors_list}**")
-
-
+#Get start and end dates 
 start_date = st.date_input(
     "Select a start date for the download."
 )
@@ -58,15 +55,11 @@ end_date = st.date_input(
 )
 st.write(f"You selected an end date of :**{end_date}**")
 
-
 #Setup time zone input (currently only for the US)
 time_options = ["America/Los_Angeles","America/Denver","America/Chicago","America/New_York", "America/Puerto_Rico","America/Anchorage"]
 zone_input = st.selectbox(f'**{'Choose the Timezone'}**', time_options)
-if zone_input != "America/Los_Angeles":
-    st.success(f"You have selected **{zone_input}**")
 
-
-#Add time zone and format to iso for inclusion in the API call
+#Add time zone and format to iso conversion for inclusion in the API call
 #Start time
 formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
 st.write(formatted_start)
@@ -76,7 +69,7 @@ end_date = end_date + timedelta(days=1)
 formatted_end = datetime(end_date.year, end_date.month, end_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
 st.write(formatted_end)
 
-
+#Setup parameter (field) selection for API call
 available_fields = ['humidity', 'temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b', 'name', 'latitude', 'longitude',
                     'humidity_a', 'humidity_b', 'temperature_a', 'temperature_b','pressure_a', 'pressure_b','pm1.0','pm1.0_a',
                     'pm1.0_b','pm1.0_atm', 'pm1.0_atm_a','pm1.0_atm_b', 'pm1.0_cf_1', 'pm1.0_cf_1_a', 'pm1.0_cf_1_b', 'pm2.5_alt',
@@ -94,8 +87,13 @@ field_list = st.multiselect(
     available_fields,
     default=available_fields[:5]
 )
-
 st.write(f'You have selected the following fields: **{field_list}**')
+
+#Setup average time input for the API call
+#All in minutes
+available_averages = [60, 0,10,30,360,1440,10080,43200,525600]
+available_averages = st.selectbox(f'**{'Choose the averaging period for the download. All are in minutes. 0 represents real time.'}**', time_options)
+
 
 def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read):
     st.write('I am in the function')
