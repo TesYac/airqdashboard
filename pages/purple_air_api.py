@@ -59,18 +59,20 @@ end_date = st.date_input(
 
 st.write(f"You selected an end date of :**{end_date}**")
 
-st.write(f'Type of time: {type(start_date)}')
+options = ["America/Los_Angeles","America/Denver","America/Chicago","America/New_York", "America/Puerto_Rico","America/Anchorage"]
 
-tzinfo=pytz.timezone("US/Pacific")
-st.write(tzinfo)
-formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0,tzinfo=ZoneInfo("America/Los_Angeles"))
-# formatted_strat = formatted_start.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
 
-# formatted_start = start_date.astimezone(timezone("America/Los_Angeles")) 
+zone_input = st.selectbox(f'**{'Choose the timezone'}**', options)
+
+if zone_input != "America/Los_Angeles":
+    st.success(f"You have selected **{zone_input}**")
+
+#add time zone and format to iso for inclusion in the API call
+formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
 st.write(formatted_start)
 formatted_start = formatted_start.isoformat()
 
-st.write(f'Start time: {formatted_start}')
+
 
 available_fields = ['humidity', 'temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b', 'name', 'latitude', 'longitude',
                     'humidity_a', 'humidity_b', 'temperature_a', 'temperature_b','pressure_a', 'pressure_b','pm1.0','pm1.0_a',
