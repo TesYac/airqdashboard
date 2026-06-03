@@ -144,7 +144,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     # Converting to PA required format
     date_list=[]
     for dt in datelist:
-        dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +dt.strftime('%Z')[:3]
+        dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +dt.strftime('%Z')[3:]
         date_list.append(dd)
     # TY Printing
     st.write(f'formatted date list')
@@ -155,9 +155,9 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     print(len_datelist)
     # Getting 2-data for one sensor at a time
     st.write('Got to the main loop of the function')
-    for s in sensors_list:
+    for item in sensors_list:
         # Adding sensor_index & API Key
-        st.write(s)
+        st.write(item)
         return 
         hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
         print(hist_api_url)
