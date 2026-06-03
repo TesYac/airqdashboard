@@ -6,6 +6,8 @@ import time
 import json
 import os
 from io import StringIO
+from zoneinfo import ZoneInfo
+
 # from sqlalchemy import create_engine
 
 
@@ -55,10 +57,10 @@ end_date = st.date_input(
 
 st.write(f"You selected an end date of :**{end_date}**")
 
+formatted_start = start_date.replace(tzinfo=ZoneInfo("US/Pacific"))
 
-dt = start_date.tz_localize('US/Pacific')
+formatted_start = formatted_start.isoformat()
 
-formatted_start = dt.isoformat()
 st.write(f'Start time: {formatted_start}')
 
 available_fields = ['humidity', 'temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b', 'name', 'latitude', 'longitude',
