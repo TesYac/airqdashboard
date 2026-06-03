@@ -63,7 +63,8 @@ st.write(f'Type of time: {type(start_date)}')
 
 tzinfo=pytz.timezone("US/Pacific")
 st.write(tzinfo)
-formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0, tzinfo = tzinfo)
+formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0, tzinfo=None)
+formatted_strat = formatted_start.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
 
 # formatted_start = start_date.astimezone(timezone("America/Los_Angeles")) 
 st.write(formatted_start)
