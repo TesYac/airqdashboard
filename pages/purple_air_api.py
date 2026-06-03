@@ -50,28 +50,31 @@ st.write(f"You have entered these sensor indexes: **{sensors_list}**")
 start_date = st.date_input(
     "Select a start date for the download."
 )
-
-st.write(f"You selected a start date of: **{start_date}**")
+if start_date:
+    st.write(f"You selected a start date of: **{start_date}**")
 
 end_date = st.date_input(
     "Select an end date for the download."
 )
-
 st.write(f"You selected an end date of :**{end_date}**")
 
-options = ["America/Los_Angeles","America/Denver","America/Chicago","America/New_York", "America/Puerto_Rico","America/Anchorage"]
 
-
-zone_input = st.selectbox(f'**{'Choose the timezone'}**', options)
-
+#Setup time zone input (currently only for the US)
+time_options = ["America/Los_Angeles","America/Denver","America/Chicago","America/New_York", "America/Puerto_Rico","America/Anchorage"]
+zone_input = st.selectbox(f'**{'Choose the Timezone'}**', time_options)
 if zone_input != "America/Los_Angeles":
     st.success(f"You have selected **{zone_input}**")
 
-#add time zone and format to iso for inclusion in the API call
+
+#Add time zone and format to iso for inclusion in the API call
+#Start time
 formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
 st.write(formatted_start)
 formatted_start = formatted_start.isoformat()
-
+#End time - adds one day to ensure full download for the last day
+end_date = end_date + 1
+formatted_end = datetime(end_date.year, end_date.month, end_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
+st.write(formatted_end)
 
 
 available_fields = ['humidity', 'temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b', 'name', 'latitude', 'longitude',
