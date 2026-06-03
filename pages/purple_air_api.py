@@ -145,8 +145,8 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
         dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +'Z'
         date_list.append(dd)
     # TY Printing
-    print(f'formatted date list')
-    print(date_list)
+    st.write(f'formatted date list')
+    st.write(date_list)
 
     # to get data from end date to start date
     len_datelist = len(date_list) - 1
@@ -167,12 +167,13 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                 dates_api_url = f'&start_timestamp={d}&end_timestamp={date_list[i+1]}'
                 # Final API URL
                 api_url = hist_api_url + dates_api_url + average_api + fields_api_url
-                print(i,api_url)
+                st.write(i,api_url)
                 #
                 try:
                     response = requests.get(api_url)
                 except:
                     print(api_url)
+                    st.write(response.status_code)
                 #
                 try:
                     assert response.status_code == requests.codes.ok
