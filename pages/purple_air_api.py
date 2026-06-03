@@ -210,10 +210,12 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     filename = '%s_%s_%s.csv' % (sensorsID,date_list[0][0:10],date_list[-1][0:10])
                     #filename = os.path.join(folderpath,r'/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d))
                     st.write(f'File name {filename}')
-                    # if (i==0):
-                    #     df.to_csv(filename, index=False, header=True)
-                    # else:
-                    #     df.to_csv(filename, mode='a', index=False, header=False) # Revert back to True
+                    if (i==0):
+                        df_total = df.copy(deep=True)
+                        # df.to_csv(filename, index=False, header=True)
+                    else:
+                        df_total.append(df, ignore_index=True)
+                        # df.to_csv(filename, mode='a', index=False, header=False) # Revert back to True
                     # # TY Printing
                     # print('File Name')
                     # print(filename)
@@ -222,7 +224,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     # # data=csv,
                     # file_name=filename,
                     # mime="text/csv"
-                    # )
+        st.write(df_total.tail())           # )
 
 #Style for button
 st.markdown("""
