@@ -152,7 +152,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     st.write(date_list)
 
     # to get data from end date to start date
-    len_datelist = len(date_list) - 1
+    len_datelist = len(date_list)
     print(len_datelist)
     # Getting 2-data for one sensor at a time
     st.write('Got to the main loop of the function')
