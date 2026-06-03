@@ -144,7 +144,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     # Converting to PA required format
     date_list=[]
     for dt in datelist:
-        dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +dt.strftime('%Z')
+        dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +dt.strftime('%Z')[:3]
         date_list.append(dd)
     # TY Printing
     st.write(f'formatted date list')
