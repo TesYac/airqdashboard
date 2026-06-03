@@ -147,6 +147,10 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     for dt in datelist:
         dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +dt.strftime('%Z')[3:]
         date_list.append(dd)
+    #This ensures the end date is included in the date_list if max_duration is not applicable    
+    if(len(date_list == 1)):
+        date_list.append(enddate)
+
     # TY Printing
     st.write(f'formatted date list')
     st.write(date_list)
@@ -168,19 +172,13 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
             # Wait time between api calls
             if (i!=0):
                 time.sleep(sleep_seconds)
-            if (i < len_datelist):
-                if (len_datelist == 1):
-                    st.write('Downloading for PA: %s for Dates: %s to %s.' %(s,d, enddate))
-                    dates_api_url = f'&start_timestamp={d}&end_timestamp={enddate}'
-                    # Final API URL
-                    api_url = hist_api_url + dates_api_url + average_api + fields_api_url
-                    st.write(i,api_url)
-                else:
-                    st.write('Downloading for PA: %s for Dates: %s to %s.' %(s,d, date_list[i+1]))
-                    dates_api_url = f'&start_timestamp={d}&end_timestamp={date_list[i+1]}'
-                    # Final API URL
-                    api_url = hist_api_url + dates_api_url + average_api + fields_api_url
-                    st.write(i,api_url)
+            if (i < len_datelist -1):
+
+                st.write('Downloading for PA: %s for Dates: %s to %s.' %(s,d, date_list[i+1]))
+                dates_api_url = f'&start_timestamp={d}&end_timestamp={date_list[i+1]}'
+                # Final API URL
+                api_url = hist_api_url + dates_api_url + average_api + fields_api_url
+                st.write(i,api_url)
                 #
                 try:
                     response = requests.get(api_url)
