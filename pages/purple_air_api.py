@@ -38,7 +38,7 @@ if key_read:
 sensors_list_input = st.text_input("Enter one or multiple sensor index values. If multiple, separate by a comma")
 if sensors_list_input:
     try:
-        list_sensors = [float(x.strip()) for x in sensors_list_input.split(",")]
+        list_sensors = [int(x.strip()) for x in sensors_list_input.split(",")]
         st.write(f"You have entered these sensor indexes: **{list_sensors}**")
     except ValueError:
         st.error("Please enter only numbers separated by commas.")
