@@ -94,9 +94,6 @@ st.write(f'You have selected the following fields: **{field_list}**')
 available_averages = [60, 0,10,30,360,1440,10080,43200,525600]
 selected_average = st.selectbox(f'**{'Choose the averaging period for the download. All are in minutes. 0 represents real time.'}**', available_averages)
 
-#Call the API to get the data 
-if st.button(f"**{'Call the API to get the Data'}**"):
-    get_historicaldata(sensors_list,field_list,formatted_start,formatted_end,selected_average,key_read)
 
 def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read):
     st.write('I am in the function')
@@ -218,6 +215,27 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     # file_name=filename,
                     # mime="text/csv"
                     # )
+
+#Style for button
+st.markdown("""
+<style>
+div.stButton > button {
+    # background-color: #0066cc;
+    color: blue;
+}
+
+div.stButton > button:hover {
+    background-color: #004c99;
+    color: white;
+}
+</style>
+""", unsafe_allow_html=True)
+
+#Call the API to get the data 
+if st.button(f"**{'Call the API to get the Data'}**"):
+    get_historicaldata(sensors_list,field_list,formatted_start,formatted_end,selected_average,key_read)
+
+
 
 bdate = '2024-08-01T00:00:00-07:00'
 edate = '2024-08-03T00:00:00-07:00'
