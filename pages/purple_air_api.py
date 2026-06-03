@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import json
 import os
@@ -72,7 +72,7 @@ formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0,
 st.write(formatted_start)
 formatted_start = formatted_start.isoformat()
 #End time - adds one day to ensure full download for the last day
-end_date = end_date + 1
+end_date = end_date + timedelta(days=1)
 formatted_end = datetime(end_date.year, end_date.month, end_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
 st.write(formatted_end)
 
