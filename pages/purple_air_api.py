@@ -148,7 +148,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
         dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +dt.strftime('%Z')[3:]
         date_list.append(dd)
     #This ensures the end date is included in the date_list if max_duration is not applicable    
-    if(len(date_list) == 1):
+    if(date_list[-1]< enddate):
         date_list.append(enddate)
 
     # TY Printing
