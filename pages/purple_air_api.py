@@ -84,7 +84,7 @@ st.subheader("Select Parameters to Download")
 st.write("Note that the recommended five parameters have already been selected by default")
 
 field_list = st.multiselect(
-    "Choose columns to display",
+    "",
     available_fields,
     default=available_fields[:5]
 )
@@ -180,56 +180,56 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                 api_url = hist_api_url + dates_api_url + average_api + fields_api_url
                 st.write(i,api_url)
                 #
-        #         try:
-        #             response = requests.get(api_url)
-        #         except:
-        #             print(api_url)
-        #             st.write(response.status_code)
-        #         #
-        #         try:
-        #             assert response.status_code == requests.codes.ok
+                try:
+                    response = requests.get(api_url)
+                except:
+                    print(api_url)
+                    st.write(response.status_code)
+                #
+                try:
+                    assert response.status_code == requests.codes.ok
 
-        #             #Creating a Pandas DataFrame
-        #             df = pd.read_csv(StringIO(response.text), sep=",", header=0)
+                    #Creating a Pandas DataFrame
+                    df = pd.read_csv(StringIO(response.text), sep=",", header=0)
 
-        #         except AssertionError:
-        #             df = pd.DataFrame()
-        #             st.error('Bad URL!')
+                except AssertionError:
+                    df = pd.DataFrame()
+                    st.error('Bad URL!')
 
-        #         if df.empty:
-        #             st.info('------------- No Data Available -------------')
-        #         else:
-        #             st.write('Made it to the else statement')
-        #             #Adding Sensor Index/ID
-        #             # df['label'] = sensor_name # TY  modified this line to add the sensor name
+                if df.empty:
+                    st.info('------------- No Data Available -------------')
+                else:
+                    st.write('Made it to the else statement')
+                    #Adding Sensor Index/ID
+                    # df['label'] = sensor_name # TY  modified this line to add the sensor name
 
-        #             #Dropping duplicate rows
-        #             df = df.drop_duplicates(subset=None, keep='first', inplace=False)
-        #             df = df.sort_values('time_stamp') # TY added this to sort data with respect to time
-        #             # Writing to Postgres Table (Optional)
-        #             #      If you dont want to save to PostgreSQL then comment line 22, 78, and 173
-        #             #df.to_sql('tablename', con=engine, if_exists='append', index=False)
-        #             st.write(df.head())
-        #             # writing to csv file
-        #             #folderpath = '/Documents/VSC_AirQual/' - Defined at top
-        #             #filename = folderpath + '/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d)
-        #             sensorsID = s
-        #             filename = '%s_%s_%s.csv' % (sensorsID,date_list[0][0:10],date_list[-1][0:10])
-        #             #filename = os.path.join(folderpath,r'/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d))
-        #             st.write(f'File name {filename}')
-        #             if (i==0):
-        #                 df_total = df.copy(deep=True)
-        #                 # df.to_csv(filename, index=False, header=True)
-        #             else:
-        #                 df_total.append(df, ignore_index=True)
-        #                 # df.to_csv(filename, mode='a', index=False, header=False) # Revert back to True
-        #             # # TY Printing
-        #             # print('File Name')
-        #             # print(filename)
+                    #Dropping duplicate rows
+                    df = df.drop_duplicates(subset=None, keep='first', inplace=False)
+                    df = df.sort_values('time_stamp') # TY added this to sort data with respect to time
+                    # Writing to Postgres Table (Optional)
+                    #      If you dont want to save to PostgreSQL then comment line 22, 78, and 173
+                    #df.to_sql('tablename', con=engine, if_exists='append', index=False)
+                    st.write(df.head())
+                    # writing to csv file
+                    #folderpath = '/Documents/VSC_AirQual/' - Defined at top
+                    #filename = folderpath + '/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d)
+                    sensorsID = s
+                    filename = '%s_%s_%s.csv' % (sensorsID,date_list[0][0:10],date_list[-1][0:10])
+                    #filename = os.path.join(folderpath,r'/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d))
+                    st.write(f'File name {filename}')
+                    if (i==0):
+                        df_total = df.copy(deep=True)
+                        # df.to_csv(filename, index=False, header=True)
+                    else:
+                        df_total.append(df, ignore_index=True)
+                        # df.to_csv(filename, mode='a', index=False, header=False) # Revert back to True
+                    # # TY Printing
+                    # print('File Name')
+                    # print(filename)
 
-        # st.write(df_total.tail())
-        # csv = df_total.to_csv(index=False, header=True).encode('utf-8')      
-        # st.download_button("Download CSV for sensor: "{s},csv, {filename}"".csv", "text/csv", key = 'download-csv')
+        st.write(df_total.tail())
+        csv = df_total.to_csv(index=False, header=True).encode('utf-8')      
+        st.download_button("Download CSV for sensor: "{s},csv, {filename}".csv", "text/csv", key = 'download-csv')
  
 #Style for button
 st.markdown("""
