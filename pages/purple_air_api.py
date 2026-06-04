@@ -9,6 +9,8 @@ from io import StringIO
 from zoneinfo import ZoneInfo
 import pytz
 from pytz import timezone
+import io
+import zipfile
 
 # from sqlalchemy import create_engine
 
@@ -161,6 +163,9 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     # Getting 2-data for one sensor at a time
     st.write('Got to the main loop of the function')
     st.write(sensors_list)
+    #Setup a zip buffer for multiple sensor download 
+    zip_buffer = io.BytesIO()
+
     for s in sensors_list:
         # Adding sensor_index & API Key
         st.write(s)
@@ -214,7 +219,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     #folderpath = '/Documents/VSC_AirQual/' - Defined at top
                     #filename = folderpath + '/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d)
                     sensorsID = s
-                    filename = '%s_%s_%s.csv' % (sensorsID,date_list[0][0:10],date_list[-1][0:10])
+                    filename = '%s_%s_%s' % (sensorsID,date_list[0][0:10],date_list[-1][0:10])
                     #filename = os.path.join(folderpath,r'/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d))
                     st.write(f'File name {filename}')
                     if (i==0):
@@ -226,11 +231,23 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     # # TY Printing
                     # print('File Name')
                     # print(filename)
+        if len(sensors_list) == 1:
+            st.write(df_total.tail())
+            csv = df_total.to_csv(index=False, header=True).encode('utf-8')      
+            st.download_button(f"Download CSV for sensor: {s}",csv, f"{filename}.csv", "text/csv", key = 'download-csv')
+        else: 
+            with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+                csv_object = df_total.to_csv(index=False, header=True).encode('utf-8')  
+                zf.writestr(
+                    f"{filename}.csv",
+                    csv_object
+                )
 
-        st.write(df_total.tail())
-        csv = df_total.to_csv(index=False, header=True).encode('utf-8')      
-        st.download_button(f"Download CSV for sensor: {s}",csv, f"{filename}.csv", "text/csv", key = 'download-csv')
- 
+            zip_buffer.seek(0)
+    if len(sensors_list)!=1:
+        filename = '%s_%s.zip' % (date_list[0][0:10],date_list[-1][0:10])
+        st.download_button("Download a Zip Folder Containing Sensor CSVs",data = zip_buffer, file_name = f"{filename}", mime = "application/zip")
+        
 #Style for button
 st.markdown("""
 <style>
