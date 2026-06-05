@@ -46,9 +46,11 @@ if sensors_list_input:
         st.error("Please enter only numbers separated by commas.")
 
 #Prepare a list of private sensor keys and set them as None if no private key is provided
-private_key = []
+private_key = pd.DataFrame({
+    "value": [None] * len(list_sensors)
+})
 answer = st.radio(
-    "Do any of the sensors have a private key? Most sensors don't",
+    "Do any of the sensors have a private key? Most sensors are registered as public and won't have a private key",
     ["Yes", "No"],
     index=1
 )
@@ -71,12 +73,9 @@ if answer == 'Yes':
     st.write(pkey)
     for i,value in enumerate(pkey):
         if(pkey[list_sensors[i]]):
-            private_key.append(pkey[list_sensors[i]])
-        else:
-            private_key.append(None)
-else:
-    for value in enumerate(list_sensors):
-        private_key.append(None)
+            private_key[i] = pkey[list_sensors[i]]
+        
+
 st.write(private_key)
 
 #Get start and end dates 
