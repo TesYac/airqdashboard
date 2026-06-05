@@ -217,7 +217,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     
                     code = response.status_code
                     st.write(code)
-                    if code == 503 or 404:
+                    if code == 503 or code == 404:
                         st.error(f' response.status_code: {error_message(code)}' )
                         st.error(f'Error Encountered when attempting to download data for sensor {s}')
                         skip_sensor = True
