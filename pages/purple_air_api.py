@@ -105,6 +105,7 @@ def error_message(err_number):
         'contact PurpleAir.')
     elif err_number == 403: 
         st.write('Invalid API Key. Double check your key.')
+
     elif err_number == 404:
         st.write('Cannot find a sensor with the provided parameters. Check that the provided'\
         'sensor_index is correct. If the sensor is privately registered, you must supply proper'\
@@ -217,15 +218,14 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     code = response.status_code
                     st.write(code)
                     if code == 503 or 404:
-                        st.error(response.status_code)
+                        st.error(f' response.status_code: {error_message(code)}' )
                         st.error(f'Error Encountered when attempting to download data for sensor {s}')
-                        error_message(code)
                         skip_sensor = True
                         break
                     else:
                         st.error(response.status_code)
                         error_message(code)
-                        return df_dict
+                        return None
 
                 if df.empty:
                     df_total = pd.DataFrame()
