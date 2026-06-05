@@ -26,7 +26,8 @@ key_read = st.text_input(
 
 if key_read:
     st.success("API key received!")
-
+#Initializing a list for the sensors
+list_sensors = []
 sensors_list_input = st.text_input("Enter one or multiple sensor index values. If multiple, separate by a comma")
 if sensors_list_input:
     try:
