@@ -45,6 +45,31 @@ if sensors_list_input:
     except ValueError:
         st.error("Please enter only numbers separated by commas.")
 
+#Prepare a list of private sensor keys and set them as None if no private key is provided
+private_key = []
+answer = st.radio(
+    "Do any of the sensors have a private key? Most sensors don't",
+    ["Yes", "No"],
+    index=1
+)
+if answer == 'Yes':
+    pkey = {}
+
+    for sensor in list_sensors:
+        col1, col2 = st.columns([1, 3])
+
+        with col1:
+            st.write(sensor)
+
+        with col2:
+            pkey[sensor] = st.text_input(
+                label="",
+                key=sensor,
+                label_visibility="collapsed"
+                
+            )
+st.write(pkey)
+
 #Get start and end dates 
 start_date = st.date_input(
     "Select a start date for the download."
@@ -294,8 +319,8 @@ div.stButton > button:hover {
 #Temp value to avoid variable not defined error 
 result = None
 #Call the API to get the data 
-if st.button(f"**{'Call the API to get the Data'}**"):
-    result = get_historicaldata(list_sensors,field_list,formatted_start,formatted_end,selected_average,key_read, None)
+# if st.button(f"**{'Call the API to get the Data'}**"):
+    # result = get_historicaldata(list_sensors,field_list,formatted_start,formatted_end,selected_average,key_read, None)
 
 if result is not None:
     if len(result) == 1:
