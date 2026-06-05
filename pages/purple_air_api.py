@@ -249,7 +249,7 @@ div.stButton > button:hover {
 </style>
 """, unsafe_allow_html=True)
 #Temp value to avoid variable not defined error 
-result = 1.0
+result = {}
 #Call the API to get the data 
 if st.button(f"**{'Call the API to get the Data'}**"):
     result = get_historicaldata(list_sensors,field_list,formatted_start,formatted_end,selected_average,key_read)
