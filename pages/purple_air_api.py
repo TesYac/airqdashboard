@@ -113,7 +113,7 @@ def error_message(err_number):
     else: 
         st.write('The PurpleAir server has encountered an error.')
 
-def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read):
+def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read,private_key = None):
     st.write('I am in the function')
     st.write(f'Sensors List: {sensors_list}')
     # Sleep Seconds
@@ -181,11 +181,14 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     #Get a list ready for returning one or more dataframes from the function
     df_dict = {}
 
-    for s in sensors_list:
+    for j,s in enumerate(sensors_list):
         # Adding sensor_index & API Key
         st.write(s)
         hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
         print(hist_api_url)
+        if private_key[j] is not None:
+            hist_api_url = hist_api_url + f'&read_key={private_key[j]}'
+
         # Getting an empty data frame for aggregating data for each date list
         df_total = pd.DataFrame()
         for i,d in enumerate(date_list):
@@ -222,12 +225,12 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     code = response.status_code
                     st.write(code)
                     if code == 503 or code == 404:
-                        st.error(f' response.status_code: {error_message(code)}' )
+                        st.error(f' {response.status_code}: {error_message(code)}' )
                         st.error(f'Error Encountered when attempting to download data for sensor {s}')
                         skip_sensor = True
                         break
                     else:
-                        st.error(f' response.status_code: {error_message(code)}')
+                        st.error(f' {response.status_code}: {error_message(code)}')
                         return None
 
                 if df.empty:
@@ -292,7 +295,7 @@ div.stButton > button:hover {
 result = None
 #Call the API to get the data 
 if st.button(f"**{'Call the API to get the Data'}**"):
-    result = get_historicaldata(list_sensors,field_list,formatted_start,formatted_end,selected_average,key_read)
+    result = get_historicaldata(list_sensors,field_list,formatted_start,formatted_end,selected_average,key_read, None)
 
 if result is not None:
     if len(result) == 1:
