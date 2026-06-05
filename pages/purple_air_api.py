@@ -256,7 +256,7 @@ if st.button(f"**{'Call the API to get the Data'}**"):
 
 
 if len(result) == 1:
-    sensor_index, df = result.items()
+    sensor_index, df = next(iter(result.items()))
     st.write(df.tail())
     csv = df.to_csv(index=False, header=True).encode('utf-8')
     filename = '%s_%s_%s.csv' % (sensor_index, start_date, end_date)      
