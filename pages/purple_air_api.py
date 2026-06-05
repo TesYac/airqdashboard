@@ -237,9 +237,9 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
         if not df_total.empty:
             df_dict[s] = df_total
         else:
-            st.info(f'------------- No Data Available for {s} -------------')
+            st.info(f'------------- No Data Available for {s} for the requested time Interval-------------')
 
-    if (df_dict.empty):
+    if len(df_dict) == 0:
         return None
     return df_dict
 
