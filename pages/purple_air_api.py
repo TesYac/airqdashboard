@@ -200,6 +200,8 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                 except AssertionError:
                     df = pd.DataFrame()
                     st.error('Bad URL!')
+                    st.write(response.status_code)
+                    return df_dict
 
                 if df.empty:
                     df_total = pd.DataFrame()
