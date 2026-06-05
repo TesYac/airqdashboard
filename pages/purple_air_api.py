@@ -249,30 +249,30 @@ div.stButton > button:hover {
 </style>
 """, unsafe_allow_html=True)
 #Temp value to avoid variable not defined error 
-result = {}
+result = None
 #Call the API to get the data 
 if st.button(f"**{'Call the API to get the Data'}**"):
     result = get_historicaldata(list_sensors,field_list,formatted_start,formatted_end,selected_average,key_read)
 
+if result is not None:
+    if len(result) == 1:
+        sensor_index, df = next(iter(result.items()))
+        st.write(df.tail())
+        csv = df.to_csv(index=False, header=True).encode('utf-8')
+        filename = '%s_%s_%s.csv' % (sensor_index, start_date, end_date)      
+        st.download_button(f"Download CSV for sensor: {sensor_index}",csv, f"{filename}.csv", "text/csv", key = 'download-csv')
+    else: 
+        #Setup a zip buffer for multiple sensor download 
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
 
-if len(result) == 1:
-    sensor_index, df = next(iter(result.items()))
-    st.write(df.tail())
-    csv = df.to_csv(index=False, header=True).encode('utf-8')
-    filename = '%s_%s_%s.csv' % (sensor_index, start_date, end_date)      
-    st.download_button(f"Download CSV for sensor: {sensor_index}",csv, f"{filename}.csv", "text/csv", key = 'download-csv')
-else: 
-    #Setup a zip buffer for multiple sensor download 
-    zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
-
-        for sensor_index, df in result.items():
-            filename = '%s_%s_%s.csv' % (sensor_index, start_date, end_date)  
-            csv_object = df.to_csv(index=False, header=True).encode('utf-8') 
-            zf.writestr(f"{filename}",csv_object)
-    zip_buffer.seek(0)
-    foldername = '%s_%s.zip' % (start_date, end_date)
-    st.download_button("Download a Zip Folder Containing Sensor CSVs",data = zip_buffer, file_name = f"{foldername}", mime = "application/zip")
+            for sensor_index, df in result.items():
+                filename = '%s_%s_%s.csv' % (sensor_index, start_date, end_date)  
+                csv_object = df.to_csv(index=False, header=True).encode('utf-8') 
+                zf.writestr(f"{filename}",csv_object)
+        zip_buffer.seek(0)
+        foldername = '%s_%s.zip' % (start_date, end_date)
+        st.download_button("Download a Zip Folder Containing Sensor CSVs",data = zip_buffer, file_name = f"{foldername}", mime = "application/zip")
            
 
 
