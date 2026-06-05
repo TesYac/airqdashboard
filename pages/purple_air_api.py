@@ -165,7 +165,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     st.write(sensors_list)
     #Setup a zip buffer for multiple sensor download 
     zip_buffer = io.BytesIO()
-
+    zf = zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) 
     for s in sensors_list:
         # Adding sensor_index & API Key
         st.write(s)
@@ -226,7 +226,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                         df_total = df.copy(deep=True)
                         # df.to_csv(filename, index=False, header=True)
                     else:
-                        df_total.append(df, ignore_index=True)
+                        df_total.append(df, ignore_index=True, header = False)
                         # df.to_csv(filename, mode='a', index=False, header=False) # Revert back to True
                     # # TY Printing
                     # print('File Name')
@@ -236,18 +236,19 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
             csv = df_total.to_csv(index=False, header=True).encode('utf-8')      
             st.download_button(f"Download CSV for sensor: {s}",csv, f"{filename}.csv", "text/csv", key = 'download-csv')
         else: 
-            with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+            
                 csv_object = df_total.to_csv(index=False, header=True).encode('utf-8')  
+                st.write(f'{filename}')
                 zf.writestr(
                     f"{filename}.csv",
                     csv_object
                 )
 
-            zip_buffer.seek(0)
+    zip_buffer.seek(0)             
     if len(sensors_list)!=1:
         filename = '%s_%s.zip' % (date_list[0][0:10],date_list[-1][0:10])
         st.download_button("Download a Zip Folder Containing Sensor CSVs",data = zip_buffer, file_name = f"{filename}", mime = "application/zip")
-        
+           
 #Style for button
 st.markdown("""
 <style>
