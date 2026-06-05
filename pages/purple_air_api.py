@@ -71,12 +71,12 @@ if answer == 'Yes':
     st.write(pkey)
     for i,value in enumerate(pkey):
         if(pkey[list_sensors[i]]):
-            private_key[i] = pkey[list_sensors[i]]
+            private_key.append(pkey[list_sensors[i]])
         else:
-            private_key[i] = None
+            private_key.append(None)
 else:
-    for i, value in enumerate(list_sensors):
-        private_key[i] = None
+    for value in enumerate(list_sensors):
+        private_key.append(None)
 st.write(private_key)
 
 #Get start and end dates 
