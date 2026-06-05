@@ -15,22 +15,12 @@ import zipfile
 # from sqlalchemy import create_engine
 
 
-#V K API Data Retrieval V2
-# -*- coding: utf-8 -*-
-####
-#This code gets hisotrical PurpleAir data of one site at a time and
-#for two days ONLY from new PurpleAir API.
-#Data from the site are in bytes/text and NOT in JSON format.
-#Created on Fri Jun 10 21:34:01 2022
-#@author: Zuber Farooqui, Ph.D.
-####
-#Python version of the API download function modified by VK from Dr.Zuber Farooqui's code
-#Edited for Streamlit by TY 
-st.title("Download Purple Air Data using an API")
+
+st.title("Download PurpleAir Data using an API")
 
 #Get API Key from the user 
 key_read = st.text_input(
-    "Enter your API Key",
+    "Enter your read API Key",
     type="password"
 )
 
@@ -56,7 +46,7 @@ answer = st.radio(
 )
 if answer == 'Yes':
     pkey = {}
-
+    st.write(f'Enter the private keys associated with the sensor/s. If a particular sensor doesn''t have a private key, leave it blank')
     for sensor in (list_sensors):
         col1, col2 = st.columns([1, 3])
 
@@ -70,13 +60,11 @@ if answer == 'Yes':
                 label_visibility="collapsed"
                 
             )
-    st.write(pkey)
+   
     for i,value in enumerate(pkey):
         if(pkey[list_sensors[i]]):
             private_key[i] = pkey[list_sensors[i]]
         
-
-st.write(private_key)
 
 #Get start and end dates 
 start_date = st.date_input(
@@ -98,12 +86,12 @@ zone_input = st.selectbox(f'**{'Choose the Timezone'}**', time_options)
 #Start time
 formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
 formatted_start = formatted_start.isoformat()
-st.write(formatted_start)
+# st.write(formatted_start)
 #End time - adds one day to ensure full download for the last day
 end_date = end_date + timedelta(days=1)
 formatted_end = datetime(end_date.year, end_date.month, end_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
 formatted_end = formatted_end.isoformat()
-st.write(formatted_end)
+# st.write(formatted_end)
 
 #Setup parameter (field) selection for API call
 available_fields = ['humidity', 'temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b', 'name', 'latitude', 'longitude',
@@ -147,10 +135,19 @@ def error_message(err_number):
         st.write('The PurpleAir server has encountered an error.')
 
 def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read,private_k):
-    st.write('I am in the function')
-    st.write(f'Sensors List: {sensors_list}')
+    #V K API Data Retrieval V2
+    # -*- coding: utf-8 -*-
+    ####
+    #This code gets hisotrical PurpleAir data of one site at a time and
+    #for two days ONLY from new PurpleAir API.
+    #Data from the site are in bytes/text and NOT in JSON format.
+    #Created on Fri Jun 10 21:34:01 2022
+    #@author: Zuber Farooqui, Ph.D.
+    ####
+    #Python version of the API download function modified by VK and TY from Dr.Zuber Farooqui's code in 2023
+    #Edited for Streamlit by TY in 2026
     # Sleep Seconds
-    sleep_seconds = 3 # wait sleep_seconds after each query
+    sleep_seconds = 3 # wait sleep_seconds after each query 
 
     # Historical API URL
     root_api_url = 'https://api.purpleair.com/v1/sensors/'
@@ -182,15 +179,11 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     #Generate a date list if max_duration < enddate - begindate +1
     datelist = pd.date_range(begindate,enddate,freq=max_duration) # 
     # TY Printing
-    st.write('Unformatted datelist')
-    st.write(datelist)
     # datelist = datetime.fromisoformat(datelist)
     # Reversing to get data from end date to start date
     datelist = datelist.tolist()
     #datelist.reverse()
     # TY Printing
-    print('reversed date list')
-    print(datelist)
 
     # Converting to PA required format
     date_list=[]
@@ -202,41 +195,39 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
         date_list.append(enddate)
 
     # TY Printing
-    st.write(f'formatted date list')
-    st.write(date_list)
+    # st.write(f'formatted date list')
+    # st.write(date_list)
 
     # to get data from end date to start date
     len_datelist = len(date_list)
     print(len_datelist)
     # Getting 2-data for one sensor at a time
-    st.write('Got to the main loop of the function')
-    st.write(sensors_list)
-    #Get a list ready for returning one or more dataframes from the function
+    # st.write('Got to the main loop of the function')
+    # st.write(sensors_list)
+
+    #Get a dictionary ready for returning one or more dataframes from the function
     df_dict = {}
 
     for j,s in enumerate(sensors_list):
         # Adding sensor_index & API Key
-        st.write(s)
         hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
         print(hist_api_url)
-        st.write(j, s)
         if private_k['value'][j] is not None:
             hist_api_url = hist_api_url + f'&read_key={private_k['value'][j]}'
 
         # Getting an empty data frame for aggregating data for each date list
         df_total = pd.DataFrame()
         for i,d in enumerate(date_list):
-            st.write(i,d)
             # Wait time between api calls
             if (i!=0):
                 time.sleep(sleep_seconds)
             if (i < len_datelist -1):
                 # Creating start and end date api url
-                st.write('Downloading for PA: %s for Dates: %s to %s.' %(s,d, date_list[i+1]))
+                # st.write('Downloading for PA: %s for Dates: %s to %s.' %(s,d, date_list[i+1]))
                 dates_api_url = f'&start_timestamp={d}&end_timestamp={date_list[i+1]}'
                 # Final API URL
                 api_url = hist_api_url + dates_api_url + average_api + fields_api_url
-                st.write(i,api_url)
+                # st.write(i,api_url)
                 #
                 try:
                     response = requests.get(api_url)
@@ -244,6 +235,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     print(api_url)
                     st.error(response.status_code)
                     st.error(response.status_code)
+                    return None
 
                 #
                 try:
@@ -257,7 +249,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     df = pd.DataFrame()
                     
                     code = response.status_code
-                    st.write(code)
+                    # st.write(code)
                     if code == 503 or code == 404:
                         st.error(f' {response.status_code}: {error_message(code)}' )
                         st.error(f'Error Encountered when attempting to download data for sensor {s}')
@@ -273,7 +265,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     
 
                 else:
-                    st.write('Made it to the else statement')
+                    # st.write('Made it to the else statement')
                     #Adding Sensor Index/ID
                     # df['label'] = sensor_name # TY  modified this line to add the sensor name
 
@@ -281,16 +273,15 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     df = df.drop_duplicates(subset=None, keep='first', inplace=False)
                     df = df.sort_values('time_stamp') # TY added this to sort data with respect to time
                     # Writing to Postgres Table (Optional)
-                    #      If you dont want to save to PostgreSQL then comment line 22, 78, and 173
                     #df.to_sql('tablename', con=engine, if_exists='append', index=False)
-                    st.write(df.head())
+                    # st.write(df.head())
                     # writing to csv file
                     #folderpath = '/Documents/VSC_AirQual/' - Defined at top
                     #filename = folderpath + '/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d)
                     sensorsID = s
                     filename = '%s_%s_%s' % (sensorsID,date_list[0][0:10],date_list[-1][0:10])
                     #filename = os.path.join(folderpath,r'/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d))
-                    st.write(f'File name {filename}')
+                    # st.write(f'File name {filename}')
                     if (df_total.empty):
                         df_total = df.copy(deep=True)
                         # df.to_csv(filename, index=False, header=True)
@@ -311,7 +302,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
         return None
     return df_dict
 
-#Style for button
+#Style for buttons
 st.markdown("""
 <style>
 div.stButton > button, div.stDownloadButton > button {
