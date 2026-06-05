@@ -163,9 +163,9 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     # Getting 2-data for one sensor at a time
     st.write('Got to the main loop of the function')
     st.write(sensors_list)
-    #Setup a zip buffer for multiple sensor download 
-    zip_buffer = io.BytesIO()
-    zf = zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) 
+    #Get a list ready for returning one or more dataframes from the function
+    df_dict = {}
+
     for s in sensors_list:
         # Adding sensor_index & API Key
         st.write(s)
@@ -231,24 +231,9 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     # # TY Printing
                     # print('File Name')
                     # print(filename)
-        if len(sensors_list) == 1:
-            st.write(df_total.tail())
-            csv = df_total.to_csv(index=False, header=True).encode('utf-8')      
-            st.download_button(f"Download CSV for sensor: {s}",csv, f"{filename}.csv", "text/csv", key = 'download-csv')
-        else: 
-            
-                csv_object = df_total.to_csv(index=False, header=True).encode('utf-8')  
-                st.write(f'{filename}')
-                zf.writestr(
-                    f"{filename}.csv",
-                    csv_object
-                )
+        df_dict[s] = df_total
+    return df_dict
 
-    zip_buffer.seek(0)             
-    if len(sensors_list)!=1:
-        filename = '%s_%s.zip' % (date_list[0][0:10],date_list[-1][0:10])
-        st.download_button("Download a Zip Folder Containing Sensor CSVs",data = zip_buffer, file_name = f"{filename}", mime = "application/zip")
-           
 #Style for button
 st.markdown("""
 <style>
@@ -264,16 +249,40 @@ div.stButton > button:hover {
 </style>
 """, unsafe_allow_html=True)
 
+
 #Call the API to get the data 
 if st.button(f"**{'Call the API to get the Data'}**"):
-    get_historicaldata(list_sensors,field_list,formatted_start,formatted_end,selected_average,key_read)
+    result = get_historicaldata(list_sensors,field_list,formatted_start,formatted_end,selected_average,key_read)
+
+
+if len(result) == 1:
+    sensor_index, df = result.items()
+    st.write(df.tail())
+    csv = df.to_csv(index=False, header=True).encode('utf-8')
+    filename = '%s_%s_%s.csv' % (sensor_index, start_date, end_date)      
+    st.download_button(f"Download CSV for sensor: {sensor_index}",csv, f"{filename}.csv", "text/csv", key = 'download-csv')
+else: 
+    #Setup a zip buffer for multiple sensor download 
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+
+        for sensor_index, df in result.items():
+            filename = '%s_%s_%s.csv' % (sensor_index, start_date, end_date)  
+            csv_object = df.to_csv(index=False, header=True).encode('utf-8') 
+            zf.writestr(f"{filename}",csv_object)
+    zip_buffer.seek(0)
+    foldername = '%s_%s.zip' % (start_date, end_date)
+    st.download_button("Download a Zip Folder Containing Sensor CSVs",data = zip_buffer, file_name = f"{foldername}", mime = "application/zip")
+           
 
 
 
-bdate = '2024-08-01T00:00:00-07:00'
-edate = '2024-08-03T00:00:00-07:00'
-sensor_name = 'Montague'
-sensors_list = ['11344']
-param_list = ['humidity','temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b']
-average_time = 30
+
+
+# bdate = '2024-08-01T00:00:00-07:00'
+# edate = '2024-08-03T00:00:00-07:00'
+# sensor_name = 'Montague'
+# sensors_list = ['11344']
+# param_list = ['humidity','temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b']
+# average_time = 30
 # get_historicaldata(sensors_list, param_list, bdate,edate,average_time,key_read)
