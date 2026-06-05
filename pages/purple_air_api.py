@@ -215,10 +215,12 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     df = pd.DataFrame()
                     
                     code = response.status_code
+                    st.write(code)
                     if code == 503 or 404:
                         st.error(response.status_code)
                         st.error(f'Error Encountered when attempting to download data for sensor {s}')
                         error_message(code)
+                        skip_sensor = True
                         break
                     else:
                         st.error(response.status_code)
@@ -258,6 +260,8 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     # # TY Printing
                     # print('File Name')
                     # print(filename)
+        if skip_sensor:
+            continue
         if not df_total.empty:
             df_dict[s] = df_total
         else:
