@@ -248,8 +248,8 @@ div.stButton > button:hover {
 }
 </style>
 """, unsafe_allow_html=True)
-
-
+#Temp value to avoid variable not defined error 
+result = 1.0
 #Call the API to get the data 
 if st.button(f"**{'Call the API to get the Data'}**"):
     result = get_historicaldata(list_sensors,field_list,formatted_start,formatted_end,selected_average,key_read)
@@ -279,10 +279,3 @@ else:
 
 
 
-# bdate = '2024-08-01T00:00:00-07:00'
-# edate = '2024-08-03T00:00:00-07:00'
-# sensor_name = 'Montague'
-# sensors_list = ['11344']
-# param_list = ['humidity','temperature', 'pressure', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b']
-# average_time = 30
-# get_historicaldata(sensors_list, param_list, bdate,edate,average_time,key_read)
