@@ -185,6 +185,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     datelist = datelist.tolist()
     #datelist.reverse()
     # TY Printing
+    st.write(datelist)
 
     # Converting to PA required format
     date_list=[]
