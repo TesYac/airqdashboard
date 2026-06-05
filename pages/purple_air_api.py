@@ -220,8 +220,8 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
         hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
         print(hist_api_url)
         st.write(j, s)
-        if private_k[j] is not None:
-            hist_api_url = hist_api_url + f'&read_key={private_k[j]}'
+        if private_k['value'][j] is not None:
+            hist_api_url = hist_api_url + f'&read_key={private_k['value'][j]}'
 
         # Getting an empty data frame for aggregating data for each date list
         df_total = pd.DataFrame()
