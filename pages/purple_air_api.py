@@ -146,7 +146,7 @@ def error_message(err_number):
     else: 
         st.write('The PurpleAir server has encountered an error.')
 
-def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read,private_k = None):
+def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read,private_k):
     st.write('I am in the function')
     st.write(f'Sensors List: {sensors_list}')
     # Sleep Seconds
