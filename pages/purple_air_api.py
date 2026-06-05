@@ -202,7 +202,9 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     st.error('Bad URL!')
 
                 if df.empty:
-                    st.info('------------- No Data Available -------------')
+                    continue
+                    
+
                 else:
                     st.write('Made it to the else statement')
                     #Adding Sensor Index/ID
@@ -231,7 +233,13 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     # # TY Printing
                     # print('File Name')
                     # print(filename)
-        df_dict[s] = df_total
+        if not df_total.empty:
+            df_dict[s] = df_total
+        else:
+            st.info(f'------------- No Data Available for {s} -------------')
+
+    if (df_dict.empty):
+        return None
     return df_dict
 
 #Style for button
