@@ -55,7 +55,7 @@ answer = st.radio(
 if answer == 'Yes':
     pkey = {}
 
-    for sensor in reversed(list_sensors):
+    for sensor in (list_sensors):
         col1, col2 = st.columns([1, 3])
 
         with col1:
