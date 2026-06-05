@@ -328,8 +328,8 @@ div.stButton > button:hover {
 #Temp value to avoid variable not defined error 
 result = None
 #Call the API to get the data 
-# if st.button(f"**{'Call the API to get the Data'}**"):
-    # result = get_historicaldata(list_sensors,field_list,formatted_start,formatted_end,selected_average,key_read, None)
+if st.button(f"**{'Call the API to get the Data'}**"):
+    result = get_historicaldata(list_sensors,field_list,formatted_start,formatted_end,selected_average,key_read, None)
 
 if result is not None:
     if len(result) == 1:
