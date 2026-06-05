@@ -211,6 +211,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
 
                     #Creating a Pandas DataFrame
                     df = pd.read_csv(StringIO(response.text), sep=",", header=0)
+                    skip_sensor = False
 
                 except AssertionError:
                     df = pd.DataFrame()
