@@ -186,14 +186,15 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
         st.write(s)
         hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
         print(hist_api_url)
-        # Creating start and end date api url
+        # Getting an empty data frame for aggregating data for each date list
+        df_total = pd.DataFrame()
         for i,d in enumerate(date_list):
             st.write(i,d)
             # Wait time between api calls
             if (i!=0):
                 time.sleep(sleep_seconds)
             if (i < len_datelist -1):
-
+                # Creating start and end date api url
                 st.write('Downloading for PA: %s for Dates: %s to %s.' %(s,d, date_list[i+1]))
                 dates_api_url = f'&start_timestamp={d}&end_timestamp={date_list[i+1]}'
                 # Final API URL
@@ -204,7 +205,9 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     response = requests.get(api_url)
                 except:
                     print(api_url)
-                    st.write(response.status_code)
+                    st.error(response.status_code)
+                    st.error(response.status_code)
+
                 #
                 try:
                     assert response.status_code == requests.codes.ok
@@ -224,12 +227,11 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                         skip_sensor = True
                         break
                     else:
-                        st.error(response.status_code)
-                        error_message(code)
+                        st.error(f' response.status_code: {error_message(code)}')
                         return None
 
                 if df.empty:
-                    df_total = pd.DataFrame()
+                    
                     continue
                     
 
