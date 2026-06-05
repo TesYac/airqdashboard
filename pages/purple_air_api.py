@@ -96,7 +96,21 @@ st.write(f'You have selected the following fields: **{field_list}**')
 #All in minutes
 available_averages = [60, 0,10,30,360,1440,10080,43200,525600]
 selected_average = st.selectbox(f'**{'Choose the averaging period for the download. All are in minutes. 0 represents real time.'}**', available_averages)
-
+def error_message(err_number):
+    if err_number == 503:
+        st.write('The server is busy loading data and you should try again in 10 seconds.')
+    if err_number == 402: 
+        st.write('Insufficient points. Additional points can be purchased by logging in to ' \
+        'the Developer Dashboard. Sensor owners can get points to query their sensor for free, ' \
+        'contact PurpleAir.')
+    if err_number == 403: 
+        st.write('Invalid API Key. Double check your key')
+    if err_number == 404:
+        st.write('Cannot find a sensor with the provided parameters. Check that the provided'\
+        'sensor_index is correct. If the sensor is privately registered, you must supply proper'\
+        'authentication (typically the sensor''s private read_key).')
+    else: 
+        st.write('The PurpleAir server has encountered an error')
 
 def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read):
     st.write('I am in the function')
@@ -199,9 +213,17 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
 
                 except AssertionError:
                     df = pd.DataFrame()
-                    st.error('Bad URL!')
-                    st.write(response.status_code)
-                    return df_dict
+                    
+                    code = response.status_code
+                    if code == 503 or 404:
+                        st.error(response.status_code)
+                        st.error(f'Error Encountered when attempting to download data for sensor {s}')
+                        error_message(code)
+                        break
+                    else:
+                        st.error(response.status_code)
+                        error_message(code)
+                        return df_dict
 
                 if df.empty:
                     df_total = pd.DataFrame()
@@ -227,7 +249,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     filename = '%s_%s_%s' % (sensorsID,date_list[0][0:10],date_list[-1][0:10])
                     #filename = os.path.join(folderpath,r'/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d))
                     st.write(f'File name {filename}')
-                    if (i==0):
+                    if (df_total.empty):
                         df_total = df.copy(deep=True)
                         # df.to_csv(filename, index=False, header=True)
                     else:
