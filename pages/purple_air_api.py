@@ -202,6 +202,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                     st.error('Bad URL!')
 
                 if df.empty:
+                    df_total = pd.DataFrame()
                     continue
                     
 
