@@ -174,7 +174,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     print(f'end date',{enddate} )
 
     # Downlaod days based on average duration requestd. These correspond to the available_averages.
-    max_duration_list = ['180d','30d','60d','90d','1YE','2YE','5YE','20YE','100YE']
+    max_duration_list = ['180d','30d','60d','90d','365d','2YE','5YE','20YE','100YE']
     max_duration = max_duration_list[available_averages.index(average_time)]
 
     #Generate a date list if max_duration < enddate - begindate +1
@@ -327,7 +327,7 @@ if st.button(f"**{'Call the API to get the Data'}**"):
 if result is not None:
     if len(result) == 1:
         sensor_index, df = next(iter(result.items()))
-        st.write(df.tail())
+        # st.write(df.tail())
         csv = df.to_csv(index=False, header=True).encode('utf-8')
         filename = '%s_%s_%s.csv' % (sensor_index, start_date, end_date)      
         st.download_button(f"Download CSV for sensor: {sensor_index}",csv, f"{filename}.csv", "text/csv", key = 'download-csv')
