@@ -99,18 +99,18 @@ selected_average = st.selectbox(f'**{'Choose the averaging period for the downlo
 def error_message(err_number):
     if err_number == 503:
         st.write('The server is busy loading data and you should try again in 10 seconds.')
-    if err_number == 402: 
+    elif err_number == 402: 
         st.write('Insufficient points. Additional points can be purchased by logging in to ' \
         'the Developer Dashboard. Sensor owners can get points to query their sensor for free, ' \
         'contact PurpleAir.')
-    if err_number == 403: 
-        st.write('Invalid API Key. Double check your key')
-    if err_number == 404:
+    elif err_number == 403: 
+        st.write('Invalid API Key. Double check your key.')
+    elif err_number == 404:
         st.write('Cannot find a sensor with the provided parameters. Check that the provided'\
         'sensor_index is correct. If the sensor is privately registered, you must supply proper'\
         'authentication (typically the sensor''s private read_key).')
     else: 
-        st.write('The PurpleAir server has encountered an error')
+        st.write('The PurpleAir server has encountered an error.')
 
 def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read):
     st.write('I am in the function')
