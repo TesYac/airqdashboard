@@ -55,7 +55,7 @@ answer = st.radio(
 if answer == 'Yes':
     pkey = {}
 
-    for sensor in list_sensors:
+    for sensor in reversed(list_sensors):
         col1, col2 = st.columns([1, 3])
 
         with col1:
@@ -68,7 +68,16 @@ if answer == 'Yes':
                 label_visibility="collapsed"
                 
             )
-st.write(pkey)
+    st.write(pkey)
+    for i,value in enumerate(pkey):
+        if(pkey[list_sensors[i]]):
+            private_key[i] = pkey[list_sensors[i]]
+        else:
+            private_key[i] = None
+else:
+    for i, value in enumerate(list_sensors):
+        private_key[i] = None
+st.write(private_key)
 
 #Get start and end dates 
 start_date = st.date_input(
