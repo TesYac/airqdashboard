@@ -73,7 +73,7 @@ if uploaded_file is not None:
     for sensor_index, df in df_dict.items():
         st.write(df.head())
 
-
+    st.write(df_main[df_main['location_label'] == 'SAFE_Sandy_Bar_Creek'].deviceID.unique())
     #Split Data Frames Using the Dictionary
     # df_blr = df_dict['BLR_Water_Barn']
     # df_blc = df_dict['Blue_Lake_City']
