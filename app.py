@@ -4,7 +4,7 @@ from datetime import datetime
 from datetime import timedelta 
 import matplotlib.pyplot as plt
 import pytz
-
+import copy
 
 st.set_page_config(
     page_title="My Data App",
@@ -42,23 +42,24 @@ if uploaded_file is not None:
     # if selected_columns:
     #     st.dataframe(df[selected_columns])
 
-    import copy
+    #Deep Copying to reconcile name with rest of code 
     df_main = copy.deepcopy(df)
     #########################################################
     #########################################################
     #########################################################
+    #Exploration
     df_main.shape
     df_main.dtypes
     df_main.describe()
     df_main.head()
 
 
-
+    #Changing the datetime_utc as a datetime variable
     df_main['datetime_utc'] = pd.to_datetime(df_main['datetime_utc'])
+    #Checking for NaN and Duplicated Data 
     df_main.isna().sum()
     df_main.duplicated('location_label').sum()
     df_main.loc[df_main.duplicated('location_label')]
-
 
     # Identify unique location (sensor) labels 
     temp = df_main.location_label.unique()
@@ -66,10 +67,10 @@ if uploaded_file is not None:
     temp.shape
 
     #create a dictionary using unique location labels. This will be used to split the data frame 
-    df_dict = {label: df_main[df_main['location_label'] == label] for label in df_main.location_label.unique()}
+    df_dict = {label: df_main[df_main['deviceID'] == label] for label in df_main.deviceID.unique()}
     st.write(df_dict.keys())
 
-    for sensor_label, df in df_dict.items():
+    for sensor_index, df in df_dict.items():
         st.write(df.head())
 
 
