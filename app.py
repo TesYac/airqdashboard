@@ -77,7 +77,7 @@ if uploaded_file is not None:
     # for j in range(3):
     col1, col2, col3 = st.columns(3)
 
-    for sensor_index, df in df_dict.items():
+    for i, (sensor_index, df) in enumerate(df_dict.items()):
         # st.write(df.head())
         col1.write(df.location_label)
         col2.write(df.datetime_utc.min(),df.datetime_utc.max())
