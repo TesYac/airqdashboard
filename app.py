@@ -69,14 +69,15 @@ if uploaded_file is not None:
     #create a dictionary using unique location labels. This will be used to split the data frame 
     df_dict = {label: df_main[df_main['deviceID'] == label] for label in df_main.deviceID.unique()}
     st.write(df_dict.keys())
-
+    df_dict.popitem()
+    st.write(df_dict.keys())
     for sensor_index, df in df_dict.items():
         st.write(df.head())
 
-    sens_id_temp =df_main[df_main['location_label'] == 'SAFE_Sandy_Bar_Creek'].deviceID.unique()
-    print(sens_id_temp)
-    st.write(df_main[df_main['deviceID'] == sens_id_temp[0]].describe())
-    st.write(df_main[df_main['deviceID'] == sens_id_temp[1]].describe())
+    # sens_id_temp =df_main[df_main['location_label'] == 'SAFE_Sandy_Bar_Creek'].deviceID.unique()
+    # print(sens_id_temp)
+    # st.write(df_main[df_main['deviceID'] == sens_id_temp[0]].describe())
+    # st.write(df_main[df_main['deviceID'] == sens_id_temp[1]].describe())
     
     #Split Data Frames Using the Dictionary
     # df_blr = df_dict['BLR_Water_Barn']
