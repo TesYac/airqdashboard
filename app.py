@@ -73,13 +73,15 @@ if uploaded_file is not None:
     st.write(df_dict.keys())
 
     #Setup a table for reporting about the CSV data ingested
-    cols = st.columns(3)
-    for j in range(3):
-        for sensor_index, df in df_dict.items():
-            # st.write(df.head())
-            cols[j].write(df.location_label)
-            cols[j].write(df.datetime_utc.min(),df.datetime_utc.max())
-            cols[j].write(df.shape)
+    # cols = st.columns(3)
+    # for j in range(3):
+    col1, col2, col3 = st.columns(3)
+
+    for sensor_index, df in df_dict.items():
+        # st.write(df.head())
+        col1.write(df.location_label)
+        col2.write(df.datetime_utc.min(),df.datetime_utc.max())
+        col3.write(df.shape)
 
     # sens_id_temp =df_main[df_main['location_label'] == 'SAFE_Sandy_Bar_Creek'].deviceID.unique()
     # print(sens_id_temp)
