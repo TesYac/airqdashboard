@@ -73,9 +73,9 @@ if uploaded_file is not None:
     for sensor_index, df in df_dict.items():
         st.write(df.head())
 
-    sens_id_temp = st.write(df_main[df_main['location_label'] == 'SAFE_Sandy_Bar_Creek'].deviceID.unique())
+    sens_id_temp =df_main[df_main['location_label'] == 'SAFE_Sandy_Bar_Creek'].deviceID.unique()
     st.write(df_main[df_main['deviceID'] == sens_id_temp[0]].value_counts)
-    st.write(df_main[df_main['deviceID'] == sens_id_temp[1]].value_counts)
+    # st.write(df_main[df_main['deviceID'] == sens_id_temp[1]].value_counts)
     
     #Split Data Frames Using the Dictionary
     # df_blr = df_dict['BLR_Water_Barn']
