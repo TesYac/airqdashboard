@@ -79,7 +79,7 @@ if uploaded_file is not None:
 
     for i, (sensor_index, df) in enumerate(df_dict.items()):
         # st.write(df.head())
-        st.write(df.location_label)
+        st.write(i)
         st.write(df.datetime_utc.min(),df.datetime_utc.max())
         st.write(df.shape)
 
