@@ -79,9 +79,9 @@ if uploaded_file is not None:
 
     for i, (sensor_index, df) in enumerate(df_dict.items()):
         # st.write(df.head())
-        col1.write(df.location_label)
-        col2.write(df.datetime_utc.min(),df.datetime_utc.max())
-        col3.write(df.shape)
+        st.write(df.location_label)
+        st.write(df.datetime_utc.min(),df.datetime_utc.max())
+        st.write(df.shape)
 
     # sens_id_temp =df_main[df_main['location_label'] == 'SAFE_Sandy_Bar_Creek'].deviceID.unique()
     # print(sens_id_temp)
