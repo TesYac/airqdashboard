@@ -70,7 +70,7 @@ if uploaded_file is not None:
     df_dict.popitem() #Get rid of last element (invalid deviceID or index)
     st.write(df_dict.keys())
     # Save Unique (sensor) Indexes
-    sensor_index_list = int(df_main.deviceID.unique())
+    sensor_index_list = df_main.deviceID.unique().astype(int)
     st.write((sensor_index_list)[0])
     #Preview the head of each dataframe 
     for i, (sensor_index, df) in enumerate(df_dict.items()):
