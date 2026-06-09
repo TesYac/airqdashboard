@@ -75,14 +75,19 @@ if uploaded_file is not None:
     #Setup a table for reporting about the CSV data ingested
     # cols = st.columns(3)
     # for j in range(3):
+    #Setup four columns for table
     col1, col2, col3, col4 = st.columns(4)
-
+    #Title
+    col1.write(f'** Sensor Index **')
+    col2.write(f'** First Data Date and Time **')
+    col3.write(f'** Last Data Date and Time **')
+    col4.write(f'** Number of rows and columns**')
     for i, (sensor_index, df) in enumerate(df_dict.items()):
         # st.write(df.head())
-        col1.write(f'{i}')
+        col1.write(f'{sensor_index_list[i]}')
         col2.write(df.datetime_utc.min())
-        col4.write(df.datetime_utc.max())
-        col3.write(df.shape)
+        col3.write(df.datetime_utc.max())
+        col4.write(df.shape)
 
     # sens_id_temp =df_main[df_main['location_label'] == 'SAFE_Sandy_Bar_Creek'].deviceID.unique()
     # print(sens_id_temp)
