@@ -61,16 +61,17 @@ if uploaded_file is not None:
     df_main.duplicated('location_label').sum()
     df_main.loc[df_main.duplicated('location_label')]
 
-    # Identify unique location (sensor) labels 
-    temp = df_main.location_label.unique()
-    temp
-    temp.shape
+    # Save Unique (sensor) Indexes
+    sensor_index_list = df_main.sensorID.unique()
+    st.write(sensor_index_list)
+    st.write(type(sensor_index_list))
 
     #create a dictionary using unique location labels. This will be used to split the data frame 
     df_dict = {label: df_main[df_main['deviceID'] == label] for label in df_main.deviceID.unique()}
     st.write(df_dict.keys())
     df_dict.popitem()
     st.write(df_dict.keys())
+
 
     #Setup a table for reporting about the CSV data ingested
     # cols = st.columns(3)
@@ -79,7 +80,7 @@ if uploaded_file is not None:
 
     for i, (sensor_index, df) in enumerate(df_dict.items()):
         # st.write(df.head())
-        col1.write(f'{i}  {df_dict.keys()[i]}')
+        col1.write(f'{i}')
         col2.write(df.datetime_utc.min(),df.datetime_utc.max())
         col3.write(df.shape)
 
