@@ -62,7 +62,7 @@ if uploaded_file is not None:
     df_main.loc[df_main.duplicated('location_label')]
 
     # Save Unique (sensor) Indexes
-    sensor_index_list = df_main.sensorID.unique()
+    sensor_index_list = df_main.deviceID.unique()
     st.write(sensor_index_list)
     st.write(type(sensor_index_list))
 
