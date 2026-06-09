@@ -61,27 +61,27 @@ if uploaded_file is not None:
     df_main.duplicated('location_label').sum()
     df_main.loc[df_main.duplicated('location_label')]
 
-    # Save Unique (sensor) Indexes
-    sensor_index_list = df_main.deviceID.unique()
-    st.write(sensor_index_list)
-    st.write(type(sensor_index_list))
+
 
     #create a dictionary using unique location labels. This will be used to split the data frame 
     df_dict = {label: df_main[df_main['deviceID'] == label] for label in df_main.deviceID.unique()}
     st.write(df_dict.keys())
-    df_dict.popitem()
+    df_dict.popitem() #Get rid of last element (invalid deviceID or index)
     st.write(df_dict.keys())
-
+    # Save Unique (sensor) Indexes
+    sensor_index_list = df_main.deviceID.unique()
+    st.write((sensor_index_list)[0])
 
     #Setup a table for reporting about the CSV data ingested
     # cols = st.columns(3)
     # for j in range(3):
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(3)
 
     for i, (sensor_index, df) in enumerate(df_dict.items()):
         # st.write(df.head())
         col1.write(f'{i}')
-        col2.write(df.datetime_utc.min(),df.datetime_utc.max())
+        col2.write(df.datetime_utc.min())
+        col4.write(df.datetime_utc.max())
         col3.write(df.shape)
 
     # sens_id_temp =df_main[df_main['location_label'] == 'SAFE_Sandy_Bar_Creek'].deviceID.unique()
