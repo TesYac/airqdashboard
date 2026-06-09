@@ -75,7 +75,7 @@ if uploaded_file is not None:
     #Setup a table for reporting about the CSV data ingested
     # cols = st.columns(3)
     # for j in range(3):
-    col1, col2, col3, col4 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     for i, (sensor_index, df) in enumerate(df_dict.items()):
         # st.write(df.head())
