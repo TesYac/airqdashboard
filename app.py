@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime 
 from datetime import timedelta 
+from datetime import date
 import matplotlib.pyplot as plt
 import pytz
 import copy
@@ -69,22 +70,25 @@ if uploaded_file is not None:
     df_dict.popitem() #Get rid of last element (invalid deviceID or index)
     st.write(df_dict.keys())
     # Save Unique (sensor) Indexes
-    sensor_index_list = df_main.deviceID.unique()
+    sensor_index_list = int(df_main.deviceID.unique())
     st.write((sensor_index_list)[0])
-
+    #Preview the head of each dataframe 
+    for i, (sensor_index, df) in enumerate(df_dict.items()):
+        st.write(df.head())
+        df['Test'] = 'True'
     #Setup a table for reporting about the CSV data ingested
     # cols = st.columns(3)
     # for j in range(3):
     #Setup four columns for table
     col1, col2, col3, col4 = st.columns(4)
     #Title
-    col1.write(f'** Sensor Index **')
+    col1.write(f'** Sensor Index and Label **')
     col2.write(f'** First Data Date and Time **')
     col3.write(f'** Last Data Date and Time **')
     col4.write(f'** Number of rows and columns**')
     for i, (sensor_index, df) in enumerate(df_dict.items()):
         # st.write(df.head())
-        col1.write(f'{sensor_index_list[i]}')
+        col1.write(f'{sensor_index_list[i]} {df.label.unique()}')
         col2.write(df.datetime_utc.min())
         col3.write(df.datetime_utc.max())
         col4.write(df.shape)
@@ -119,22 +123,6 @@ if uploaded_file is not None:
     #create a list of the needed data frames from the ones selected 
 
     sensor_dfs = (df_butler,df_cecilville,df_happy_camp_cc,df_sawyer,df_forks,df_kdnr_out,df_somesbar,df_sandybar)
-
-
-
-
-
-
-        
-    
-    
-    for item in sensor_dfs:
-        print(item.describe())
-
-    for i,df in enumerate(sensor_dfs):
-        print(sensor_location_names[i])
-        print(df.datetime_utc.min(),df.datetime_utc.max())
-        print(df.shape)
         
 
     
@@ -161,83 +149,83 @@ if uploaded_file is not None:
     # df_butler[df_butler.index.duplicated()]
 
     
-#     # Re-index with 15 minute intervals to capture missing data 
-#     from datetime import date
-#     #defining the function for subtracting 
-#     def get_difference(startdate, enddate):
-#         diff = enddate - startdate
-#         return diff.days
-#     #initializing dates
-#     startdate = date(2021, 7, 1)
-#     enddate = date(2021, 12, 31)
-#     #storing the result and calling the function
-#     days = get_difference(startdate, enddate)+1
-#     #displaying the result
-#     print(f'Difference is {days} days')
-#     print(f'total 15 minute intervals of: {days*24*4}')
+    # Re-index with 15 minute intervals to capture missing data 
+ 
+    #defining the function for calculating number of days between two dates
+    def get_difference(startdate, enddate):
+        diff = enddate - startdate
+        return diff.days
+    #initializing dates
+    startdate = date(2021, 7, 1)
+    enddate = date(2021, 12, 31)
+    #storing the result and calling the function
+    days = get_difference(startdate, enddate)+1
+    #displaying the result
+    print(f'Difference is {days} days')
+    print(f'total 15 minute intervals of: {days*24*4}')
 
-#     #reindex - generate 15 minute interval time index
+    #reindex - generate 15 minute interval time index
 
-#     sensor_list_df =  (df_butler,df_cecilville,df_happy_camp_cc,df_sawyer,df_forks,df_kdnr_out,df_somesbar,df_sandybar)
+    sensor_list_df =  (df_butler,df_cecilville,df_happy_camp_cc,df_sawyer,df_forks,df_kdnr_out,df_somesbar,df_sandybar)
 
-#     date_index2 = pd.date_range('2021/07/01', periods=17664, freq='15min')
-#     sensor_list_gf = (df_butler,df_cecilville,df_happy_camp_cc,df_sawyer,df_forks,df_kdnr_out,df_somesbar,df_sandybar)
-#     name_label = ["Butler_Creek","CARB_Cecilville",
-#     "SAFE_Happy_Camp_Community_Center","CARB_Sawyer","Forks_Of_Salmon","Orleans_KDNR_Outdoor","SAFE_Somes_Bar","SAFE_Sandy_Bar_Creek","SAFE_Swillup_Creek"]
-#     short_list = (df_butler, df_forks,df_kdnr_out,df_somesbar)
-#     short_name = ["Butler Creek","Forks Of Salmon","Orleans","Somes_Bar" ]
-#     for df in sensor_list_df:
-#         # setting first name as index column
-#         df.set_index(["datetime_utc"], inplace = True,append = False, drop = True)
-#         df = df.reindex(date_index2)
-#         checkna = df['longitude'].isna()
-#         print(checkna.value_counts())
+    date_index2 = pd.date_range('2021/07/01', periods=17664, freq='15min')
+    sensor_list_gf = (df_butler,df_cecilville,df_happy_camp_cc,df_sawyer,df_forks,df_kdnr_out,df_somesbar,df_sandybar)
+    name_label = ["Butler_Creek","CARB_Cecilville",
+    "SAFE_Happy_Camp_Community_Center","CARB_Sawyer","Forks_Of_Salmon","Orleans_KDNR_Outdoor","SAFE_Somes_Bar","SAFE_Sandy_Bar_Creek","SAFE_Swillup_Creek"]
+    short_list = (df_butler, df_forks,df_kdnr_out,df_somesbar)
+    short_name = ["Butler Creek","Forks Of Salmon","Orleans","Somes_Bar" ]
+    for df in sensor_list_df:
+        # setting first name as index column
+        df.set_index(["datetime_utc"], inplace = True,append = False, drop = True)
+        df = df.reindex(date_index2)
+        checkna = df['longitude'].isna()
+        print(checkna.value_counts())
 
 
     
-#     for df in sensor_list_df:
-#         # setting first name as index column
-#         df['check'] = (df['ab_deviation_absolute'] > 5.0) & (df['ab_deviation_fraction'] > 0.7)
-#         print(df.head())
-#         print(df['check'].value_counts())
+    for df in sensor_list_df:
+        # setting first name as index column
+        df['check'] = (df['ab_deviation_absolute'] > 5.0) & (df['ab_deviation_fraction'] > 0.7)
+        print(df.head())
+        print(df['check'].value_counts())
         
 
 
-#     #set average is NaN if check if True
-#     for df in sensor_list_df:
-#     #checking the location where check is True
-#         print(df['ab_deviation_OK'].loc[df[df['check']==True].index.values])
-#         print(df['pm25_avg'].loc[df[df['check']==True].index.values])
-#     #No need for the code below because the data already had deviation check
-#     #If not, uncomment the code below
-#     #df.loc[df.check == True,'pm25_avg'] = np.nan
+    #set average is NaN if check if True
+    for df in sensor_list_df:
+    #checking the location where check is True
+        print(df['ab_deviation_OK'].loc[df[df['check']==True].index.values])
+        print(df['pm25_avg'].loc[df[df['check']==True].index.values])
+    #No need for the code below because the data already had deviation check
+    #If not, uncomment the code below
+    #df.loc[df.check == True,'pm25_avg'] = np.nan
 
-#     #EPA correction equation. The PM values were CF Atm. Need to change to PM CF= 1 for better accuracy
-#     for df in sensor_list_df:
-#         df['corrected'] = 0.534*(1*(df['pm25_avg']))-0.0844*df['humidity']+5.604
+    #EPA correction equation. The PM values were CF Atm. Need to change to PM CF= 1 for better accuracy
+    for df in sensor_list_df:
+        df['corrected'] = 0.534*(1*(df['pm25_avg']))-0.0844*df['humidity']+5.604
     
-#     for df in sensor_list_df:
-#         print(df.head())
+    for df in sensor_list_df:
+        print(df.head())
 
     
-#     #scatter plot between the average and corrected pm2.5 concentration
-#     for i, df in enumerate(sensor_list_df):
-#     #dataframe with negative corrections
-#         df_neg_corrected=df[(df['corrected'] < 0)]
-#         df_neg_corrected.plot.scatter('pm25_avg','corrected', title=name_label[i])
+    #scatter plot between the average and corrected pm2.5 concentration
+    for i, df in enumerate(sensor_list_df):
+    #dataframe with negative corrections
+        df_neg_corrected=df[(df['corrected'] < 0)]
+        df_neg_corrected.plot.scatter('pm25_avg','corrected', title=name_label[i])
 
-#     for i, df in enumerate(sensor_list_df):
-#     #Changing the negative corrected values to zero
-#         df.loc[df.corrected < 0,'corrected'] = 0
-#         print(name_label[i],'Negatives Found:')
-#         print(df['corrected'].where(df['corrected'] < 0).count())
-#         print(df.head())
-#         #Change index time from utc to local time (PST)
-#         df.index=df.index.tz_localize('UTC')
-#         print(df.head())
-#         df.index=df.index.tz_convert('US/Pacific')
-#         print(df.head())
-#         ## Orleans event identification troublshooting 
+    for i, df in enumerate(sensor_list_df):
+    #Changing the negative corrected values to zero
+        df.loc[df.corrected < 0,'corrected'] = 0
+        print(name_label[i],'Negatives Found:')
+        print(df['corrected'].where(df['corrected'] < 0).count())
+        print(df.head())
+        #Change index time from utc to local time (PST)
+        df.index=df.index.tz_localize('UTC')
+        print(df.head())
+        df.index=df.index.tz_convert('US/Pacific')
+        print(df.head())
+        ## Orleans event identification troublshooting 
       
 
 
