@@ -13,11 +13,22 @@ import io
 import zipfile
 
 # 
-from libsql_client import create_client_sync
-client = create_client_sync(
-    url=st.secrets["TURSO_DATABASE_URL"],
-    auth_token=st.secrets["TURSO_AUTH_TOKEN"],
-)
+from libsql_client import Client, Config
+
+@st.cache_resource
+def get_turso_client():
+    config = Config(
+        url=st.secrets["TURSO_DATABASE_URL"],
+        auth_token=st.secrets["TURSO_AUTH_TOKEN"]
+    )
+    return Client(config)
+
+client = get_turso_client()
+
+# client = create_client_sync(
+#     url=st.secrets["TURSO_DATABASE_URL"],
+#     auth_token=st.secrets["TURSO_AUTH_TOKEN"],
+# )
 #Set up database tables (only runs the first time)
 client.execute("""
 CREATE TABLE IF NOT EXISTS sensors_meta (
@@ -29,7 +40,7 @@ CREATE TABLE IF NOT EXISTS sensors_meta (
     longitude REAL,
     altitude REAL
     
-    )
+    );
 """)
 
 client.execute("""
@@ -43,7 +54,7 @@ CREATE TABLE IF NOT EXISTS rawdata (
     channel_flags_manual TEXT, channel_flags_auto TEXT, confidence TEXT, confidence_manual TEXT, confidence_auto TEXT]          
     PRIMARY KEY (sensor_index, time_stamp),
     FOREIGN KEY (sensor_index) REFERENCES sensors_meta(sensor_index)
-    )
+    );
 """)
 
 #Enter a test value to the sensors_meta table
@@ -68,10 +79,22 @@ VALUES (?, ?, ?, ?, ?, ?, ?)
     5787.0
 ])
 # Check to see if the values are saved 
-result = client.execute("SELECT * FROM sensors_meta")
+@st.cache_data()
+def fetch_data():
+    result_set = client.execute("SELECT * FROM sensors_meta")
+    
+    # Convert Turso's result set into a list of dictionaries
+    rows = []
+    for row in result_set.rows:
+        st.write(row)  
 
-for row in result.rows:
-    st.write(row)   
+        # rows.append(dict(zip(result_set.columns, row)))
+        
+    # Return a Pandas DataFrame, which Streamlit handles beautifully
+    # return pd.DataFrame(rows)
+
+
+
 
 
 
