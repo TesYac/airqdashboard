@@ -83,17 +83,16 @@ client.execute(insert_query, [
 # Check to see if the values are saved 
 @st.cache_data()
 def fetch_data(table):
+    st.write(table)
     result_set = client.execute("SELECT * FROM {table}")
-    
+    rows = []
     # Convert Turso's result set into a list of dictionaries
     for row in result_set.rows:
-        st.write(row)  
-
-        # rows.append(dict(zip(result_set.columns, row)))
+        rows.append(dict(zip(result_set.columns, row)))
         
-    # Return a Pandas DataFrame, which Streamlit handles beautifully
-    # return pd.DataFrame(rows)
-fetch_data('sensors_meta')
+    #Return a Pandas DataFrame, which Streamlit handles beautifully
+    return pd.DataFrame(rows)
+st.write(fetch_data('sensors_meta'))
 
 
 
