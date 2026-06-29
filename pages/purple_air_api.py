@@ -158,7 +158,7 @@ if answer == 'Yes':
             private_key[i] = pkey[list_sensors[i]]
 
 
-        
+private_key_list =  private_key["value"].tolist()
 #Check to see if the sensor indexes are already in the database 
 placeholders = ",".join(["?"] * len(list_sensors))
 
@@ -179,6 +179,7 @@ missing_private_keys = []
 for i, sensor in enumerate(list_sensors):
     if sensor not in existing_sensors:
         missing_sensors.append(sensor)
+        
         missing_private_keys.append(private_key[i])
 
 
