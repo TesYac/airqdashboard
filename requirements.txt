@@ -5,4 +5,5 @@ tzdata
 pytz
 requests>=2.31
 python-dotenv>=1.0
+libsql_client
 
