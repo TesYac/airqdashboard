@@ -19,20 +19,11 @@ import libsql_client as libsql
 def get_turso_client():
     url=st.secrets["TURSO_DATABASE_URL"]
     token=st.secrets["TURSO_AUTH_TOKEN"]
-    
-    return libsql.create_client(url=url,auth_token=token)
+    return libsql.create_client_sync(
+        url=url,auth_token=token)
+
 
 client = get_turso_client()
-
-# 2. Define an asynchronous wrapper for executing SQL
-async def run_query(query: str, params: list = None):
-    # The client must be used inside an async context or closed properly
-    async with client:
-        return await client.execute(query, params or [])
-
-
-
-
 
 #Set up database tables (only runs the first time)
 create_table_query = """
@@ -46,8 +37,8 @@ CREATE TABLE IF NOT EXISTS sensors_meta (
     altitude REAL
     
     ); """
-# Execute the async function synchronously using asyncio.run()
-asyncio.run(run_query(create_table_query))
+# Execute the sync function using the create table query
+client.execute(create_table_query)
 
 
 # client.execute("""
