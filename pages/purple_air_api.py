@@ -59,7 +59,7 @@ st.write(result.rows)
 
 #Enter a test value to the sensors_meta table
 insert_query = """
-INSERT INTO sensors_meta (
+INSERT OR IGNORE INTO sensors_meta (
     sensor_index,
     name,
     location_name,
