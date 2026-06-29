@@ -13,8 +13,8 @@ import io
 import zipfile
 
 # 
-from libsql_client import create_client
-client = create_client(
+from libsql_client import create_client_sync
+client = create_client_sync(
     url=st.secrets["TURSO_DATABASE_URL"],
     auth_token=st.secrets["TURSO_AUTH_TOKEN"],
 )
@@ -71,7 +71,7 @@ VALUES (?, ?, ?, ?, ?, ?, ?)
 result = client.execute("SELECT * FROM sensors_meta")
 
 for row in result.rows:
-    st.write(row)
+    st.write(row)   
 
 
 
