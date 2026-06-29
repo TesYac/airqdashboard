@@ -86,7 +86,6 @@ def fetch_data(table):
     result_set = client.execute("SELECT * FROM {table}")
     
     # Convert Turso's result set into a list of dictionaries
-    rows = []
     for row in result_set.rows:
         st.write(row)  
 
