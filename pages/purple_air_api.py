@@ -56,7 +56,7 @@ client.execute(create_table_query)
 # """)
 
 #Enter a test value to the sensors_meta table
-client.execute("""
+insert_query = """
 INSERT INTO sensors_meta (
     sensor_index,
     name,
@@ -66,8 +66,10 @@ INSERT INTO sensors_meta (
     longitude,
     altitude
 )
-VALUES (?, ?, ?, ?, ?, ?, ?)
-""", [
+VALUES (?, ?, ?, ?, ?, ?, ?);
+"""
+
+client.execute(insert_query, [
     11111,
     "test_sensor",
     "Denver",
