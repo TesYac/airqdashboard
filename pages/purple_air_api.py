@@ -14,6 +14,197 @@ import zipfile
 
 # 
 import libsql_client as libsql
+def error_message(err_number):
+    if err_number == 503:
+        st.write('The server is busy loading data and you should try again in 10 seconds.')
+    elif err_number == 402: 
+        st.write('Insufficient points. Additional points can be purchased by logging in to ' \
+        'the Developer Dashboard. Sensor owners can get points to query their sensor for free, ' \
+        'contact PurpleAir.')
+    elif err_number == 403: 
+        st.write('Invalid API Key. Double check your key.')
+
+    elif err_number == 404:
+        st.write('Cannot find a sensor with the provided parameters. Check that the provided'\
+        'sensor_index is correct. If the sensor is privately registered, you must supply proper'\
+        'authentication (typically the sensor''s private read_key).')
+    else: 
+        st.write('The PurpleAir server has encountered an error.')
+@st.cache_data
+def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read,private_k):
+    #V K API Data Retrieval V2
+    # -*- coding: utf-8 -*-
+    ####
+    #This code gets hisotrical PurpleAir data of one site at a time and
+    #for two days ONLY from new PurpleAir API.
+    #Data from the site are in bytes/text and NOT in JSON format.
+    #Created on Fri Jun 10 21:34:01 2022
+    #@author: Zuber Farooqui, Ph.D.
+    ####
+    #Python version of the API download function modified by VK and TY from Dr.Zuber Farooqui's code in 2023
+    #Edited for Streamlit by TY in 2026
+    # Sleep Seconds
+    sleep_seconds = 3 # wait sleep_seconds after each query 
+
+    # Historical API URL
+    root_api_url = 'https://api.purpleair.com/v1/sensors/'
+
+    # Average time: The desired average in minutes, one of the following:0 (real-time),10 (default if not specified),30,60
+    average_api = f'&average={average_time}'
+
+    # Creating fields api url from fields list to download the data: Note: Sensor ID/Index will not be downloaded as default
+    
+    for i,f in enumerate(fields_list):
+        if (i == 0):
+            fields_api_url = f'&fields={f}'
+        else:
+            fields_api_url += f'%2C{f}'
+
+    # Dates of Historical Data period
+    # begindate = datetime.fromisoformat(bdate)
+    begindate = bdate
+    # enddate   = datetime.fromisoformat(edate)
+    enddate = edate
+    # TY Printing
+    print(f'begin date', {begindate})
+    print(f'end date',{enddate} )
+
+    # Downlaod days based on average duration requestd. These correspond to the available_averages.
+    max_duration_list = ['180d','30d','60d','90d','365d','730d','1825d','7300d','36500d'] #365d = 1YE, then 2, 5, 20, and 100YE 
+    #pd.date_range gave errors when YE was used so switched to days
+    max_duration = max_duration_list[available_averages.index(average_time)]
+
+    #Generate a date list if max_duration < enddate - begindate +1
+    datelist = pd.date_range(begindate,enddate,freq=max_duration) # 
+    # TY Printing
+    # datelist = datetime.fromisoformat(datelist)
+    # Reversing to get data from end date to start date
+    datelist = datelist.tolist()
+    #datelist.reverse()
+    # TY Printing
+    st.write(datelist)
+
+    # Converting to PA required format
+    date_list=[]
+    for dt in datelist:
+        dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +dt.strftime('%Z')[3:]
+        date_list.append(dd)
+    #This ensures the end date is included in the date_list if max_duration is not applicable    
+    if(date_list[-1]< enddate):
+        date_list.append(enddate)
+
+    # TY Printing
+    # st.write(f'formatted date list')
+    # st.write(date_list)
+
+    # to get data from end date to start date
+    len_datelist = len(date_list)
+    print(len_datelist)
+    # Getting 2-data for one sensor at a time
+    # st.write('Got to the main loop of the function')
+    # st.write(sensors_list)
+
+    #Get a dictionary ready for returning one or more dataframes from the function
+    df_dict = {}
+
+    for j,s in enumerate(sensors_list):
+        # Adding sensor_index & API Key
+        hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
+        print(hist_api_url)
+        if private_k['value'][j] is not None:
+            hist_api_url = hist_api_url + f'&read_key={private_k['value'][j]}'
+
+        # Getting an empty data frame for aggregating data for each date list
+        df_total = pd.DataFrame()
+        for i,d in enumerate(date_list):
+            # Wait time between api calls
+            if (i!=0):
+                time.sleep(sleep_seconds)
+            if (i < len_datelist -1):
+                # Creating start and end date api url
+                # st.write('Downloading for PA: %s for Dates: %s to %s.' %(s,d, date_list[i+1]))
+                dates_api_url = f'&start_timestamp={d}&end_timestamp={date_list[i+1]}'
+                # Final API URL
+                api_url = hist_api_url + dates_api_url + average_api + fields_api_url
+                # st.write(i,api_url)
+                #
+                try:
+                    response = requests.get(api_url)
+                except:
+                    print(api_url)
+                    st.error(response.status_code)
+                    st.error(response.status_code)
+                    return None
+
+                #
+                try:
+                    assert response.status_code == requests.codes.ok
+
+                    #Creating a Pandas DataFrame
+                    df = pd.read_csv(StringIO(response.text), sep=",", header=0)
+                    skip_sensor = False
+
+                except AssertionError:
+                    df = pd.DataFrame()
+                    
+                    code = response.status_code
+                    # st.write(code)
+                    if code == 503 or code == 404:
+                        st.error(f' {response.status_code}: {error_message(code)}' )
+                        st.error(f'Error Encountered when attempting to download data for sensor {s}')
+                        skip_sensor = True
+                        break
+                    else:
+                        st.error(f' {response.status_code}: {error_message(code)}')
+                        return None
+
+                if df.empty:
+                    
+                    continue
+                    
+
+                else:
+                    # st.write('Made it to the else statement')
+                    #Adding Sensor Index/ID
+                    # df['label'] = sensor_name # TY  modified this line to add the sensor name
+
+                    #Dropping duplicate rows
+                    df = df.drop_duplicates(subset=None, keep='first', inplace=False)
+                    df = df.sort_values('time_stamp') # TY added this to sort data with respect to time
+                    # Writing to Postgres Table (Optional)
+                    #df.to_sql('tablename', con=engine, if_exists='append', index=False)
+                    # st.write(df.head())
+                    # writing to csv file
+                    #folderpath = '/Documents/VSC_AirQual/' - Defined at top
+                    #filename = folderpath + '/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d)
+                    sensorsID = s
+                    filename = '%s_%s_%s' % (sensorsID,date_list[0][0:10],date_list[-1][0:10])
+                    #filename = os.path.join(folderpath,r'/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d))
+                    # st.write(f'File name {filename}')
+                    if (df_total.empty):
+                        df_total = df.copy(deep=True)
+                        # df.to_csv(filename, index=False, header=True)
+                    else:
+                        df_total.append(df, ignore_index=True, header = False)
+                        # df.to_csv(filename, mode='a', index=False, header=False) # Revert back to True
+                    # # TY Printing
+                    # print('File Name')
+                    # print(filename)
+        if skip_sensor:
+            continue
+        if not df_total.empty:
+            df_dict[s] = df_total
+        else:
+            st.info(f'------------- No Data Available for {s} for the requested time Interval-------------')
+
+    if len(df_dict) == 0:
+        return None
+    return df_dict
+##############################################################################################
+##############################################################################################
+##############################################################################################
+##############################################################################################
+##############################################################################################
 
 @st.cache_resource
 def get_turso_client():
@@ -203,7 +394,7 @@ if missing_sensors:
         #Get start and end dates 
         #Start time
         start_date = date(2021, 8, 1)
-        end_date = date(2024, 8, 2)
+        end_date = date(2021, 8, 2)
         zone_input = 'America/Los_Angeles'
         formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
         formatted_start = formatted_start.isoformat()
@@ -219,8 +410,8 @@ if missing_sensors:
         selected_average = [60]
 
         #Make the API Call 
-        # get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read,private_k)
-
+        result = get_historicaldata(missing_sensors,field_list, formatted_start,formatted_end,selected_average,key_read,missing_private_keys)
+        st.write(result)
         st.success("Sensors added successfully!")
 
 
@@ -276,192 +467,6 @@ st.write(f'You have selected the following fields: **{field_list}**')
 #All in minutes
 available_averages = [60, 0,10,30,360,1440,10080,43200,525600]
 selected_average = st.selectbox(f'**{'Choose the averaging period for the download. All are in minutes. 0 represents TEXT time.'}**', available_averages)
-def error_message(err_number):
-    if err_number == 503:
-        st.write('The server is busy loading data and you should try again in 10 seconds.')
-    elif err_number == 402: 
-        st.write('Insufficient points. Additional points can be purchased by logging in to ' \
-        'the Developer Dashboard. Sensor owners can get points to query their sensor for free, ' \
-        'contact PurpleAir.')
-    elif err_number == 403: 
-        st.write('Invalid API Key. Double check your key.')
-
-    elif err_number == 404:
-        st.write('Cannot find a sensor with the provided parameters. Check that the provided'\
-        'sensor_index is correct. If the sensor is privately registered, you must supply proper'\
-        'authentication (typically the sensor''s private read_key).')
-    else: 
-        st.write('The PurpleAir server has encountered an error.')
-
-def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read,private_k):
-    #V K API Data Retrieval V2
-    # -*- coding: utf-8 -*-
-    ####
-    #This code gets hisotrical PurpleAir data of one site at a time and
-    #for two days ONLY from new PurpleAir API.
-    #Data from the site are in bytes/text and NOT in JSON format.
-    #Created on Fri Jun 10 21:34:01 2022
-    #@author: Zuber Farooqui, Ph.D.
-    ####
-    #Python version of the API download function modified by VK and TY from Dr.Zuber Farooqui's code in 2023
-    #Edited for Streamlit by TY in 2026
-    # Sleep Seconds
-    sleep_seconds = 3 # wait sleep_seconds after each query 
-
-    # Historical API URL
-    root_api_url = 'https://api.purpleair.com/v1/sensors/'
-
-    # Average time: The desired average in minutes, one of the following:0 (real-time),10 (default if not specified),30,60
-    average_api = f'&average={average_time}'
-
-    # Creating fields api url from fields list to download the data: Note: Sensor ID/Index will not be downloaded as default
-    
-    for i,f in enumerate(fields_list):
-        if (i == 0):
-            fields_api_url = f'&fields={f}'
-        else:
-            fields_api_url += f'%2C{f}'
-
-    # Dates of Historical Data period
-    # begindate = datetime.fromisoformat(bdate)
-    begindate = bdate
-    # enddate   = datetime.fromisoformat(edate)
-    enddate = edate
-    # TY Printing
-    print(f'begin date', {begindate})
-    print(f'end date',{enddate} )
-
-    # Downlaod days based on average duration requestd. These correspond to the available_averages.
-    max_duration_list = ['180d','30d','60d','90d','365d','730d','1825d','7300d','36500d'] #365d = 1YE, then 2, 5, 20, and 100YE 
-    #pd.date_range gave errors when YE was used so switched to days
-    max_duration = max_duration_list[available_averages.index(average_time)]
-
-    #Generate a date list if max_duration < enddate - begindate +1
-    datelist = pd.date_range(begindate,enddate,freq=max_duration) # 
-    # TY Printing
-    # datelist = datetime.fromisoformat(datelist)
-    # Reversing to get data from end date to start date
-    datelist = datelist.tolist()
-    #datelist.reverse()
-    # TY Printing
-    st.write(datelist)
-
-    # Converting to PA required format
-    date_list=[]
-    for dt in datelist:
-        dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +dt.strftime('%Z')[3:]
-        date_list.append(dd)
-    #This ensures the end date is included in the date_list if max_duration is not applicable    
-    if(date_list[-1]< enddate):
-        date_list.append(enddate)
-
-    # TY Printing
-    # st.write(f'formatted date list')
-    # st.write(date_list)
-
-    # to get data from end date to start date
-    len_datelist = len(date_list)
-    print(len_datelist)
-    # Getting 2-data for one sensor at a time
-    # st.write('Got to the main loop of the function')
-    # st.write(sensors_list)
-
-    #Get a dictionary ready for returning one or more dataframes from the function
-    df_dict = {}
-
-    for j,s in enumerate(sensors_list):
-        # Adding sensor_index & API Key
-        hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
-        print(hist_api_url)
-        if private_k['value'][j] is not None:
-            hist_api_url = hist_api_url + f'&read_key={private_k['value'][j]}'
-
-        # Getting an empty data frame for aggregating data for each date list
-        df_total = pd.DataFrame()
-        for i,d in enumerate(date_list):
-            # Wait time between api calls
-            if (i!=0):
-                time.sleep(sleep_seconds)
-            if (i < len_datelist -1):
-                # Creating start and end date api url
-                # st.write('Downloading for PA: %s for Dates: %s to %s.' %(s,d, date_list[i+1]))
-                dates_api_url = f'&start_timestamp={d}&end_timestamp={date_list[i+1]}'
-                # Final API URL
-                api_url = hist_api_url + dates_api_url + average_api + fields_api_url
-                # st.write(i,api_url)
-                #
-                try:
-                    response = requests.get(api_url)
-                except:
-                    print(api_url)
-                    st.error(response.status_code)
-                    st.error(response.status_code)
-                    return None
-
-                #
-                try:
-                    assert response.status_code == requests.codes.ok
-
-                    #Creating a Pandas DataFrame
-                    df = pd.read_csv(StringIO(response.text), sep=",", header=0)
-                    skip_sensor = False
-
-                except AssertionError:
-                    df = pd.DataFrame()
-                    
-                    code = response.status_code
-                    # st.write(code)
-                    if code == 503 or code == 404:
-                        st.error(f' {response.status_code}: {error_message(code)}' )
-                        st.error(f'Error Encountered when attempting to download data for sensor {s}')
-                        skip_sensor = True
-                        break
-                    else:
-                        st.error(f' {response.status_code}: {error_message(code)}')
-                        return None
-
-                if df.empty:
-                    
-                    continue
-                    
-
-                else:
-                    # st.write('Made it to the else statement')
-                    #Adding Sensor Index/ID
-                    # df['label'] = sensor_name # TY  modified this line to add the sensor name
-
-                    #Dropping duplicate rows
-                    df = df.drop_duplicates(subset=None, keep='first', inplace=False)
-                    df = df.sort_values('time_stamp') # TY added this to sort data with respect to time
-                    # Writing to Postgres Table (Optional)
-                    #df.to_sql('tablename', con=engine, if_exists='append', index=False)
-                    # st.write(df.head())
-                    # writing to csv file
-                    #folderpath = '/Documents/VSC_AirQual/' - Defined at top
-                    #filename = folderpath + '/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d)
-                    sensorsID = s
-                    filename = '%s_%s_%s' % (sensorsID,date_list[0][0:10],date_list[-1][0:10])
-                    #filename = os.path.join(folderpath,r'/sensorsID_%s_%s_%s.csv' % (s,date_list[i+1],d))
-                    # st.write(f'File name {filename}')
-                    if (df_total.empty):
-                        df_total = df.copy(deep=True)
-                        # df.to_csv(filename, index=False, header=True)
-                    else:
-                        df_total.append(df, ignore_index=True, header = False)
-                        # df.to_csv(filename, mode='a', index=False, header=False) # Revert back to True
-                    # # TY Printing
-                    # print('File Name')
-                    # print(filename)
-        if skip_sensor:
-            continue
-        if not df_total.empty:
-            df_dict[s] = df_total
-        else:
-            st.info(f'------------- No Data Available for {s} for the requested time Interval-------------')
-
-    if len(df_dict) == 0:
-        return None
-    return df_dict
 
 #Style for buttons
 st.markdown("""
