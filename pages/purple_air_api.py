@@ -80,8 +80,13 @@ client.execute(insert_query, [
     -104.9903,
     5787.0
 ])
+
+
 # Check to see if the values are saved 
-@st.cache_data()
+result = client.execute("SELECT * FROM sensors_meta;")
+st.write(result.rows)
+
+# @st.cache_data()
 def fetch_data(table):
     st.write(table)
     result_set = client.execute("SELECT * FROM {table}")
