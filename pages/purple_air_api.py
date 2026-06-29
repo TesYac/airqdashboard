@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import time
 import json
 import os
@@ -202,8 +202,8 @@ if missing_sensors:
         # Insert sensors here
         #Get start and end dates 
         #Start time
-        start_date = '2021/08/01'
-        end_date = '2021/08/02'
+        start_date = date(2021, 8, 1)
+        end_date = date(2024, 8, 2)
         formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
         formatted_start = formatted_start.isoformat()
         st.write(formatted_start)
