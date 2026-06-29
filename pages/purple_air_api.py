@@ -173,11 +173,18 @@ result = client.execute(query, list_sensors)
 existing_sensors = {row[0] for row in result.rows}
 
 st.write(existing_sensors)
+missing_sensors = []
+missing_private_keys = []
 
-missing_sensors = set(list_sensors) - existing_sensors
+for i, sensor in enumerate(list_sensors):
+    if sensor not in existing_sensors:
+        missing_sensors.append(sensor)
+        missing_private_keys.append(private_key[i])
+
 
 st.write("Existing sensors in the Database:", existing_sensors)
 st.write("Missing:", missing_sensors)
+st.write("Missing sensors private key:", missing_private_keys)
 
 #Ask the user if they would like to add the missing sensors to the database 
 if missing_sensors:
@@ -192,6 +199,11 @@ if missing_sensors:
 
     if add_sensors == "Yes":
         # Insert sensors here
+        #Get start and 
+
+        #Make the API Call 
+        # get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read,private_k)
+
         st.success("Sensors added successfully!")
 
 
