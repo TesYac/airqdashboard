@@ -54,6 +54,8 @@ client.execute(create_table_query)
 #     FOREIGN KEY (sensor_index) REFERENCES sensors_meta(sensor_index)
 #     );
 # """)
+result = client.execute("PRAGMA table_info(sensors_meta);")
+st.write(result.rows)
 
 #Enter a test value to the sensors_meta table
 insert_query = """
