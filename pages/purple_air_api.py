@@ -12,7 +12,66 @@ from pytz import timezone
 import io
 import zipfile
 
-# from sqlalchemy import create_engine
+# 
+from libsql_client import create_client
+client = create_client(
+    url=st.secrets["TURSO_DATABASE_URL"],
+    auth_token=st.secrets["TURSO_AUTH_TOKEN"],
+)
+#Set up database tables (only runs the first time)
+client.execute("""
+CREATE TABLE IF NOT EXISTS sensors_meta (
+    sensor_index INTEGER PRIMARY KEY,
+    name TEXT,
+    location_name TEXT,
+    group_name TEXT
+    latitude REAL,
+    longitude REAL,
+    altitude REAL
+    
+    )
+""")
+
+client.execute("""
+CREATE TABLE IF NOT EXISTS rawdata (
+    sensor_index INTEGER, time_stamp TEXT, temperature TEXT,humidity TEXT, pressure TEXT, pm2.5_cf_1_a TEXT, pm2.5_cf_1_b TEXT, name TEXT, latitude TEXT, longitude TEXT,
+    pm1.0_b TEXT, pm1.0_atm TEXT, pm1.0_atm_a TEXT, pm1.0_atm_b TEXT, pm1.0_cf_1 TEXT, pm1.0_cf_1_a TEXT, pm1.0_cf_1_b TEXT, pm2.5_alt TEXT,
+    pm2.5_alt_a TEXT, pm2.5_alt_b TEXT, pm2.5 TEXT, pm2.5_a TEXT, pm2.5_b TEXT, pm2.5_atm TEXT, pm2.5_atm_a TEXT, pm2.5_atm_b TEXT, 
+    pm2.5_cf_1 TEXT, pm10.0_cf_1 TEXT, pm10.0_cf_1_a TEXT, pm10.0_cf_1_b TEXT, icon TEXT, model TEXT, hardware TEXT, location_type TEXT, 
+    private TEXT, altitude TEXT, position_rating TEXT, led_brightness TEXT, firmware_version TEXT, firmware_upgrade TEXT, rssi TEXT,
+    uptime TEXT, pa_latency TEXT, memory TEXT, last_seen TEXT, last_modified TEXT, date_created TEXT, channel_state TEXT, channel_flags TEXT
+    channel_flags_manual TEXT, channel_flags_auto TEXT, confidence TEXT, confidence_manual TEXT, confidence_auto TEXT]          
+    PRIMARY KEY (sensor_index, time_stamp),
+    FOREIGN KEY (sensor_index) REFERENCES sensors_meta(sensor_index)
+    )
+""")
+
+#Enter a test value to the sensors_meta table
+client.execute("""
+INSERT INTO sensors_meta (
+    sensor_index,
+    name,
+    location_name,
+    group_name,
+    latitude,
+    longitude,
+    altitude
+)
+VALUES (?, ?, ?, ?, ?, ?, ?)
+""", [
+    11111,
+    "test_sensor",
+    "Denver",
+    "Colorado1"
+    39.7392,
+    -104.9903,
+    5787.0
+])
+# Check to see if the values are saved 
+result = client.execute("SELECT * FROM sensors_meta")
+
+for row in result.rows:
+    st.write(row)
 
 
 
@@ -117,7 +176,7 @@ st.write(f'You have selected the following fields: **{field_list}**')
 #Setup average time input for the API call
 #All in minutes
 available_averages = [60, 0,10,30,360,1440,10080,43200,525600]
-selected_average = st.selectbox(f'**{'Choose the averaging period for the download. All are in minutes. 0 represents real time.'}**', available_averages)
+selected_average = st.selectbox(f'**{'Choose the averaging period for the download. All are in minutes. 0 represents TEXT time.'}**', available_averages)
 def error_message(err_number):
     if err_number == 503:
         st.write('The server is busy loading data and you should try again in 10 seconds.')
