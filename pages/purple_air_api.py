@@ -200,7 +200,22 @@ if missing_sensors:
 
     if add_sensors == "Yes":
         # Insert sensors here
-        #Get start and 
+        #Get start and end dates 
+        #Start time
+        start_date = '2021/08/01'
+        end_date = '2021/08/02'
+        formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
+        formatted_start = formatted_start.isoformat()
+        st.write(formatted_start)
+        #End time - adds one day to ensure full download for the last day
+        end_date = end_date + timedelta(days=1)
+        formatted_end = datetime(end_date.year, end_date.month, end_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
+        formatted_end = formatted_end.isoformat()
+        st.write(formatted_end)
+        #Get the field list
+        field_list = ['name', 'latitude', 'longitude', 'altitude']
+        #Set the average_time
+        selected_average = [60]
 
         #Make the API Call 
         # get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read,private_k)
