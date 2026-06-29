@@ -83,22 +83,26 @@ client.execute(insert_query, [
 
 
 # Check to see if the values are saved 
-result = client.execute("SELECT * FROM sensors_meta;")
-st.write(result.rows)
+# result = client.execute("SELECT * FROM sensors_meta;")
+# st.write(result.rows)
 
-# @st.cache_data()
+@st.cache_data()
 def fetch_data(table):
-    st.write(table)
-    result_set = client.execute("SELECT * FROM {table}")
-    rows = []
-    # Convert Turso's result set into a list of dictionaries
-    for row in result_set.rows:
-        rows.append(dict(zip(result_set.columns, row)))
-        
-    #Return a Pandas DataFrame, which Streamlit handles beautifully
-    return pd.DataFrame(rows)
-st.write(fetch_data('sensors_meta'))
+    allowed_tables = {"sensors_meta", "rawdata"}
 
+    if table not in allowed_tables:
+        raise ValueError("Invalid table name")
+
+    result_set = client.execute(f"SELECT * FROM {table}")
+
+    rows = [
+        dict(zip(result_set.columns, row))
+        for row in result_set.rows
+    ]
+
+    return pd.DataFrame(rows)
+
+st.dataframe(fetch_data("sensors_meta"))
 
 
 
