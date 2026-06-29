@@ -62,7 +62,7 @@ VALUES (?, ?, ?, ?, ?, ?, ?)
     11111,
     "test_sensor",
     "Denver",
-    "Colorado1"
+    "Colorado1",
     39.7392,
     -104.9903,
     5787.0
