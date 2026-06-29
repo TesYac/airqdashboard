@@ -180,7 +180,7 @@ for i, sensor in enumerate(list_sensors):
     if sensor not in existing_sensors:
         missing_sensors.append(sensor)
         
-        missing_private_keys.append(private_key[i])
+        missing_private_keys.append(private_key_list[i])
 
 
 st.write("Existing sensors in the Database:", existing_sensors)
