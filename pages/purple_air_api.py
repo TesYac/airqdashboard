@@ -156,7 +156,45 @@ if answer == 'Yes':
     for i,value in enumerate(pkey):
         if(pkey[list_sensors[i]]):
             private_key[i] = pkey[list_sensors[i]]
+
+
         
+#Check to see if the sensor indexes are already in the database 
+placeholders = ",".join(["?"] * len(list_sensors))
+
+query = f"""
+SELECT sensor_index
+FROM sensors_meta
+WHERE sensor_index IN ({placeholders})
+"""
+
+result = client.execute(query, list_sensors)
+
+existing_sensors = {row[0] for row in result.rows}
+
+st.write(existing_sensors)
+
+missing_sensors = set(list_sensors) - existing_sensors
+
+st.write("Existing sensors in the Database:", existing_sensors)
+st.write("Missing:", missing_sensors)
+
+#Ask the user if they would like to add the missing sensors to the database 
+if missing_sensors:
+    st.warning(
+        f"The following sensors are not in the database: {missing_sensors}"
+    )
+
+    add_sensors = st.radio(
+        "Would you like to add these sensors to the database?",
+        ["No", "Yes"]
+    )
+
+    if add_sensors == "Yes":
+        # Insert sensors here
+        st.success("Sensors added successfully!")
+
+
 
 #Get start and end dates 
 start_date = st.date_input(
