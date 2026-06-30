@@ -72,6 +72,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     # Downlaod days based on average duration requestd. These correspond to the available_averages.
     max_duration_list = ['180d','30d','60d','90d','365d','730d','1825d','7300d','36500d'] #365d = 1YE, then 2, 5, 20, and 100YE 
     #pd.date_range gave errors when YE was used so switched to days
+    available_averages = [60, 0,10,30,360,1440,10080,43200,525600]
     max_duration = max_duration_list[available_averages.index(average_time)]
 
     #Generate a date list if max_duration < enddate - begindate +1
