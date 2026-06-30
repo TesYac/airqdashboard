@@ -374,7 +374,8 @@ for i, sensor in enumerate(list_sensors):
         missing_sensors.append(sensor)
         
         missing_private_keys.append(private_key_list[i])
-
+#Convert list to a pd data frame
+private_keys_missing= pd.DataFrame(missing_private_keys, columns=["value"])
 
 st.write("Existing sensors in the Database:", existing_sensors)
 st.write("Missing:", missing_sensors)
@@ -411,7 +412,7 @@ if missing_sensors:
         #Set the average_time
         selected_average = 60
         #Make the API Call 
-        result = get_historicaldata(missing_sensors,field_list, formatted_start,formatted_end,selected_average,key_read,missing_private_keys)
+        result = get_historicaldata(missing_sensors,field_list, formatted_start,formatted_end,selected_average,key_read, private_keys_missing)
         st.write(result)
         st.success("Sensors added successfully!")
 
