@@ -463,10 +463,10 @@ if missing_sensors:
                 .fromtimestamp(df['last_seen'][0], UTC)
                 .astimezone(ZoneInfo("America/Los_Angeles")))
                 st.dataframe(df)
-                if(df['location_type'] == 0):
-                    df['location_type'] = 'Outdoors'
-                elif(df['location_type'] == 1):
-                    df['location_type'] = 'Indoors'
+                if(df['location_type'][0] == 0):
+                    df['location_type'][0] = 'Outdoors'
+                elif(df['location_type'][0] == 1):
+                    df['location_type'][0] = 'Indoors'
             else:
                 for sensor_index, df in result.items():
                     st.dataframe(df)
