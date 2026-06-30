@@ -455,8 +455,12 @@ if missing_sensors:
         if result is not None:
             if len(result) == 1:
                 sensor_index, df = next(iter(result.items()))
+                #Convert from unix stamp to local time
                 df['date_created'] = (datetime
                 .fromtimestamp(df['date_created'][0], UTC)
+                .astimezone(ZoneInfo("America/Los_Angeles")))
+                df['last_seen'] = (datetime
+                .fromtimestamp(df['last_seen'][0], UTC)
                 .astimezone(ZoneInfo("America/Los_Angeles")))
                 st.dataframe(df)
             else:
