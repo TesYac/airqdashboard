@@ -410,7 +410,7 @@ if missing_sensors:
         #Get the field list
         field_list = ['latitude', 'longitude']
         #Set the average_time
-        selected_average = 60
+        selected_average = 0
         #Make the API Call 
         result = get_historicaldata(missing_sensors,field_list, formatted_start,formatted_end,selected_average,key_read, private_keys_missing)
         st.write(result)
