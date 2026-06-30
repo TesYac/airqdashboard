@@ -463,6 +463,12 @@ if missing_sensors:
                 .fromtimestamp(df['last_seen'][0], UTC)
                 .astimezone(ZoneInfo("America/Los_Angeles")))
                 st.dataframe(df)
+                #location of sensor 
+                if(df['location_type'][0] == 0):
+                    located_in = 'Outdoors'
+                elif(df['location_type'][0] == 1):
+                    located_in = 'Indoors'
+
                 location_name = st.text_input(
                 "Enter a location name for this sensor (optional):",
                 placeholder="e.g., Orleans")
@@ -483,10 +489,35 @@ if missing_sensors:
                 group_name = group_name or None
                 st.write(f'You selected or entered a group name of: {group_name}')
                 
-                # if(df['location_type'][0] == 0):
-                #     df['located_in'][0] = 'Outdoors'
-                # elif(df['location_type'][0] == 1):
-                #     df['located_in'][0] = 'Indoors'
+                insert_query = """
+                INSERT OR IGNORE INTO sensors_meta (
+                    date_created,
+                    last_seen,
+                    sensor_index,
+                    name,
+                    latitude,
+                    longitude,
+                    altitude,
+                    location_name,
+                    group_name
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?,?,?)
+                """
+                client.execute(insert_query, [
+                    df['date_created'][0],
+                    df['last_seen'][0],
+                    df["sensor_index"][0],
+                    df["name"][0],
+                    df["latitude"][0],
+                    df["longitude"][0],
+                    df["altitude"][0],
+                    location_name,
+                    group_name,
+                    located_in
+                    
+                ])
+
+
             else:
                 for sensor_index, df in result.items():
                     st.dataframe(df)
