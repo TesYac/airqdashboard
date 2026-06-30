@@ -396,10 +396,10 @@ if missing_sensors:
         # Insert sensors here
         #Get start and end dates 
         #Start time
-        # start_date = date.today() - timedelta(days = 1)
-        # end_date = date.today() - timedelta(days = 1)
-        start_date = date(2024,8,23)
-        end_date = date(2024,8,23)
+        start_date = date.today()
+        end_date = date.today()
+        # start_date = date(2024,8,23)
+        # end_date = date(2024,8,23)
         zone_input = 'America/Los_Angeles'
         formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
         formatted_start = formatted_start.isoformat()
