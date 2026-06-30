@@ -14,6 +14,8 @@ import zipfile
 
 # 
 import libsql_client as libsql
+
+
 def error_message(err_number):
     if err_number == 503:
         st.write('The server is busy loading data and you should try again in 10 seconds.')
@@ -453,6 +455,9 @@ if missing_sensors:
         if result is not None:
             if len(result) == 1:
                 sensor_index, df = next(iter(result.items()))
+                df['date_created'] = (datetime
+                .fromtimestamp(df['date_created'] / 1000, UTC)
+                .astimezone(ZoneInfo("America/Los_Angeles")))
                 st.dataframe(df)
             else:
                 for sensor_index, df in result.items():
