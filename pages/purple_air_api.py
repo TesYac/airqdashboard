@@ -408,7 +408,7 @@ if missing_sensors:
         formatted_end = formatted_end.isoformat()
         st.write(formatted_end)
         #Get the field list
-        field_list = ['name', 'latitude', 'longitude', 'altitude']
+        field_list = ['latitude', 'longitude']
         #Set the average_time
         selected_average = 60
         #Make the API Call 
