@@ -464,8 +464,10 @@ if missing_sensors:
                 .astimezone(ZoneInfo("America/Los_Angeles")))
                 st.dataframe(df)
                 if(df['location_type'][0] == 0):
+                    df['location_type'] = df['location_type'].astype(str)
                     df['location_type'][0] = 'Outdoors'
                 elif(df['location_type'][0] == 1):
+                    df['location_type'] = df['location_type'].astype(str)
                     df['location_type'][0] = 'Indoors'
             else:
                 for sensor_index, df in result.items():
