@@ -463,10 +463,30 @@ if missing_sensors:
                 .fromtimestamp(df['last_seen'][0], UTC)
                 .astimezone(ZoneInfo("America/Los_Angeles")))
                 st.dataframe(df)
-                if(df['location_type'][0] == 0):
-                    df['located_in'][0] = 'Outdoors'
-                elif(df['location_type'][0] == 1):
-                    df['located_in'][0] = 'Indoors'
+                location_name = st.text_input(
+                "Enter a location name for this sensor (optional):",
+                placeholder="e.g., Orleans")
+
+                group_name_options = ["Orleans","Somes Bar","Happy Camp","Fort Jones", "Arcata", "Blue Lake Rancheria", "Mount Shasta", "Hoopa"]
+                options = group_name_options + ["Enter a new group..."]
+                selected_group = st.selectbox(
+                    "Select a sensor group:",options)
+
+                if selected_group == "Enter a new group...":
+                    group_name = st.text_input(
+                        "New group name:",
+                        placeholder="e.g., Eureka"
+                    )
+                else:
+                    group_name = selected_group
+
+                group_name = group_name or None
+                st.write(f'You selected or entered a group name of: {group_name}')
+                
+                # if(df['location_type'][0] == 0):
+                #     df['located_in'][0] = 'Outdoors'
+                # elif(df['location_type'][0] == 1):
+                #     df['located_in'][0] = 'Indoors'
             else:
                 for sensor_index, df in result.items():
                     st.dataframe(df)
