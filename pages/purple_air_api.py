@@ -48,7 +48,7 @@ def get_sensor_metadata(sensor_indexes, read_keys, api_key):
         params = {
             "fields": (
                 "date_created,last_seen,sensor_index,name,"
-                "latitude,longitude,altitude,"
+                "latitude,longitude,altitude,location_type"
             ),
             "read_key": read_key
         }
@@ -463,6 +463,10 @@ if missing_sensors:
                 .fromtimestamp(df['last_seen'][0], UTC)
                 .astimezone(ZoneInfo("America/Los_Angeles")))
                 st.dataframe(df)
+                if(df['location_type'] == 0):
+                    df['location_type'] = 'Outdoors'
+                elif(df['location_type'] == 1):
+                    df['location_type'] = 'Indoors'
             else:
                 for sensor_index, df in result.items():
                     st.dataframe(df)
