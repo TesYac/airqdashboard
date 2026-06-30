@@ -30,6 +30,40 @@ def error_message(err_number):
         'authentication (typically the sensor''s private read_key).')
     else: 
         st.write('The PurpleAir server has encountered an error.')
+@st.cache_data()
+def get_sensor_metadata(sensor_indexes, read_keys, api_key):
+
+    sensor_metadata = {}
+
+    headers = {
+        "X-API-Key": api_key
+    }
+
+    for sensor_index, read_key in zip(sensor_indexes, read_keys):
+
+        url = f"https://api.purpleair.com/v1/sensors/{sensor_index}"
+
+        params = {
+            "fields": (
+                "date_created,last_seen,sensor_index,name,"
+                "latitude,longitude,altitude,"
+            ),
+            "read_key": read_key
+        }
+
+        response = requests.get(
+            url,
+            headers=headers,
+            params=params
+        )
+        response.raise_for_status()
+
+        sensor = response.json()["sensor"]
+
+        # Store a one-row DataFrame keyed by sensor index
+        sensor_metadata[sensor_index] = pd.DataFrame([sensor])
+
+    return sensor_metadata
 @st.cache_data
 def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_read,private_k):
     #V K API Data Retrieval V2
@@ -414,7 +448,8 @@ if missing_sensors:
         #Set the average_time
         selected_average = 0
         #Make the API Call 
-        result = get_historicaldata(missing_sensors,field_list, formatted_start,formatted_end,selected_average,key_read, private_keys_missing)
+        # result = get_historicaldata(missing_sensors,field_list, formatted_start,formatted_end,selected_average,key_read, private_keys_missing)
+        result = get_sensor_metadata(missing_sensors, missing_private_keys, key_read)
         if result is not None:
             if len(result) == 1:
                 sensor_index, df = next(iter(result.items()))
