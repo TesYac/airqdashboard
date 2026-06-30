@@ -128,7 +128,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
                 dates_api_url = f'&start_timestamp={d}&end_timestamp={date_list[i+1]}'
                 # Final API URL
                 api_url = hist_api_url + dates_api_url + average_api + fields_api_url
-                # st.write(i,api_url)
+                st.write(i,api_url)
                 #
                 try:
                     response = requests.get(api_url)
@@ -396,8 +396,8 @@ if missing_sensors:
         # Insert sensors here
         #Get start and end dates 
         #Start time
-        start_date = date(2021, 8, 1)
-        end_date = date(2021, 8, 2)
+        start_date = date(2021, 8, 17)
+        end_date = date(2021, 8, 18)
         zone_input = 'America/Los_Angeles'
         formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
         formatted_start = formatted_start.isoformat()
