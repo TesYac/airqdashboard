@@ -73,6 +73,7 @@ def get_historicaldata(sensors_list,fields_list, bdate,edate,average_time,key_re
     max_duration_list = ['180d','30d','60d','90d','365d','730d','1825d','7300d','36500d'] #365d = 1YE, then 2, 5, 20, and 100YE 
     #pd.date_range gave errors when YE was used so switched to days
     available_averages = [60, 0,10,30,360,1440,10080,43200,525600]
+    st.write(available_averages.index(average_time))
     max_duration = max_duration_list[available_averages.index(average_time)]
 
     #Generate a date list if max_duration < enddate - begindate +1
@@ -409,7 +410,6 @@ if missing_sensors:
         field_list = ['name', 'latitude', 'longitude', 'altitude']
         #Set the average_time
         selected_average = [60]
-
         #Make the API Call 
         result = get_historicaldata(missing_sensors,field_list, formatted_start,formatted_end,selected_average,key_read,missing_private_keys)
         st.write(result)
