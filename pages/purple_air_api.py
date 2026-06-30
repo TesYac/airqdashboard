@@ -396,8 +396,8 @@ if missing_sensors:
         # Insert sensors here
         #Get start and end dates 
         #Start time
-        start_date = date(2024, 8, 1)
-        end_date = date(2024, 8, 2)
+        start_date = date.today() - timedelta(days = 1)
+        end_date = date.today() - timedelta(days = 1)
         zone_input = 'America/Los_Angeles'
         formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
         formatted_start = formatted_start.isoformat()
@@ -408,12 +408,20 @@ if missing_sensors:
         formatted_end = formatted_end.isoformat()
         st.write(formatted_end)
         #Get the field list
-        field_list = ['latitude', 'longitude']
+        field_list = ['name','latitude', 'longitude']
         #Set the average_time
         selected_average = 0
         #Make the API Call 
         result = get_historicaldata(missing_sensors,field_list, formatted_start,formatted_end,selected_average,key_read, private_keys_missing)
-        st.write(result)
+        if result is not None:
+            if len(result) == 1:
+                sensor_index, df = next(iter(result.items()))
+                st.dataframe(df)
+            else:
+                for sensor_index, df in result.items():
+                    st.dataframe(df)
+                
+        # st.write(result)
         st.success("Sensors added successfully!")
 
 
