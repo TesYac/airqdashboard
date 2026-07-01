@@ -508,13 +508,13 @@ if missing_sensors:
                 VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?)
                 """
                 client.execute(insert_query, [
-                    df['date_created'],
-                    df['last_seen'],
-                    df["sensor_index"],
-                    df["name"],
-                    df["latitude"],
-                    df["longitude"],
-                    df["altitude"],
+                    df['date_created'].iloc[0],
+                    df['last_seen'].iloc[0],
+                    df["sensor_index"].iloc[0],
+                    df["name"].iloc[0],
+                    df["latitude"].iloc[0],
+                    df["longitude"].iloc[0],
+                    df["altitude"].iloc[0],
                     location_name,
                     group_name,
                     located_in
