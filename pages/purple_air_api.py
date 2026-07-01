@@ -459,7 +459,7 @@ if missing_sensors:
                 df['date_created'] = (datetime
                 .fromtimestamp(df['date_created'][0], UTC)
                 .astimezone(ZoneInfo("America/Los_Angeles")))
-                # st.write(type(df['date_created']))
+                st.write(df['date_created'])
                 df['last_seen'] = (datetime
                 .fromtimestamp(df['last_seen'][0], UTC)
                 .astimezone(ZoneInfo("America/Los_Angeles")))
@@ -508,13 +508,13 @@ if missing_sensors:
                 VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?)
                 """
                 client.execute(insert_query, [
-                    df['date_created'][0],
-                    df['last_seen'][0],
-                    df["sensor_index"][0],
-                    df["name"][0],
-                    df["latitude"][0],
-                    df["longitude"][0],
-                    df["altitude"][0],
+                    df['date_created'],
+                    df['last_seen'],
+                    df["sensor_index"],
+                    df["name"],
+                    df["latitude"],
+                    df["longitude"],
+                    df["altitude"],
                     location_name,
                     group_name,
                     located_in
