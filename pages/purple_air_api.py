@@ -459,11 +459,11 @@ if missing_sensors:
                 df['date_created'][0] = (datetime
                 .fromtimestamp(df['date_created'][0], UTC)
                 .astimezone(ZoneInfo("America/Los_Angeles")))
-                st.write(type(df['date_created']))
+                # st.write(type(df['date_created']))
                 df['last_seen'][0] = (datetime
                 .fromtimestamp(df['last_seen'][0], UTC)
                 .astimezone(ZoneInfo("America/Los_Angeles")))
-                st.write(type(df['date_created']))
+                # st.write(type(df['date_created']))
                 
                 st.dataframe(df)
                 #location of sensor 
