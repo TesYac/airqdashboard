@@ -511,14 +511,14 @@ if missing_sensors:
                 client.execute(insert_query, [
                     date_created,
                     last_seen,
-                    df["sensor_index"].iloc[0],
-                    df["name"].iloc[0],
-                    df["latitude"].iloc[0],
-                    df["longitude"].iloc[0],
-                    df["altitude"].iloc[0],
-                    location_name,
-                    group_name,
-                    located_in
+                    int(df["sensor_index"].iloc[0]),
+                    str(df["name"].iloc[0]) if pd.notna(df["name"].iloc[0]) else None,
+                    float(df["latitude"].iloc[0]) if pd.notna(df["latitude"].iloc[0]) else None,
+                    float(df["longitude"].iloc[0]) if pd.notna(df["longitude"].iloc[0]) else None,
+                    float(df["altitude"].iloc[0]) if pd.notna(df["altitude"].iloc[0]) else None,
+                    str(group_name) if group_name else None,
+                    str(location_name) if location_name else None,
+                    str(located_in) if located_in else None
                     
                 ])
 
