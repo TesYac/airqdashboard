@@ -525,9 +525,75 @@ if missing_sensors:
 
             else:
                 for sensor_index, df in result.items():
+                    #Convert from unix stamp to local time
+                    df['date_created'] = (datetime
+                    .fromtimestamp(df['date_created'][0], UTC)
+                    .astimezone(ZoneInfo("America/Los_Angeles")))
+                    date_created = df['date_created'].iloc[0].isoformat() 
+                    st.write(date_created)
+                    df['last_seen'] = (datetime
+                    .fromtimestamp(df['last_seen'][0], UTC)
+                    .astimezone(ZoneInfo("America/Los_Angeles")))
+                    # st.write(type(df['date_created']))
+                    last_seen = df['last_seen'].iloc[0].isoformat() 
                     st.dataframe(df)
+                    #location of sensor 
+                    if(df['location_type'][0] == 0):
+                        located_in = 'Outdoors'
+                    elif(df['location_type'][0] == 1):
+                        located_in = 'Indoors'
+
+                    location_name = st.text_input(
+                    "Enter a location name for this sensor (optional):",
+                    placeholder="e.g., Orleans")
+
+                    group_name_options = ["Orleans","Somes Bar","Happy Camp","Fort Jones", "Arcata", "Blue Lake Rancheria", "Mount Shasta", "Hoopa"]
+                    options = group_name_options + ["Enter a new group..."]
+                    selected_group = st.selectbox(
+                        "Select a sensor group:",options)
+
+                    if selected_group == "Enter a new group...":
+                        group_name = st.text_input(
+                            "New group name:",
+                            placeholder="e.g., Eureka"
+                        )
+                    else:
+                        group_name = selected_group
+
+                    group_name = group_name or None
+                    st.write(f'You selected or entered a group name of: {group_name}')
+                    
+                    insert_query = """
+                    INSERT OR IGNORE INTO sensors_meta (
+                        date_created,
+                        last_seen,
+                        sensor_index,
+                        name,
+                        latitude,
+                        longitude,
+                        altitude,
+                        location_name,
+                        group_name, 
+                        located_in
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?)
+                    """
+                    client.execute(insert_query, [
+                        date_created,
+                        last_seen,
+                        int(df["sensor_index"].iloc[0]),
+                        str(df["name"].iloc[0]) if pd.notna(df["name"].iloc[0]) else None,
+                        float(df["latitude"].iloc[0]) if pd.notna(df["latitude"].iloc[0]) else None,
+                        float(df["longitude"].iloc[0]) if pd.notna(df["longitude"].iloc[0]) else None,
+                        float(df["altitude"].iloc[0]) if pd.notna(df["altitude"].iloc[0]) else None,
+                        str(group_name) if group_name else None,
+                        str(location_name) if location_name else None,
+                        str(located_in) if located_in else None
+                        
+                    ])
+                    
                 
-        # st.write(result)
+        
         st.success("Sensors added successfully!")
 
 
