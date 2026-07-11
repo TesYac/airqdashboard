@@ -428,9 +428,7 @@ private_keys_missing= pd.DataFrame(missing_private_keys, columns=["value"])
 
 if(existing_sensors):
     st.write("Existing sensors in the Database:", existing_sensors)
-if(missing_sensors):
-    st.write("Missing:", missing_sensors)
-    st.write("Missing sensors private key:", missing_private_keys)
+
 
 #Ask the user if they would like to add the missing sensors to the database 
 if missing_sensors:
@@ -446,28 +444,8 @@ if missing_sensors:
     if add_sensors == "Yes":
 
 
-        # Insert sensors here
-        #Get start and end dates 
-        #Start time
-        start_date = date.today()
-        end_date = date.today()
-        # start_date = date(2024,8,23)
-        # end_date = date(2024,8,23)
-        zone_input = 'America/Los_Angeles'
-        formatted_start = datetime(start_date.year, start_date.month, start_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
-        formatted_start = formatted_start.isoformat()
-        st.write(formatted_start)
-        #End time - adds one day to ensure full download for the last day
-        end_date = end_date + timedelta(days=1)
-        formatted_end = datetime(end_date.year, end_date.month, end_date.day, 0, 0,tzinfo=ZoneInfo(zone_input))
-        formatted_end = formatted_end.isoformat()
-        st.write(formatted_end)
-        #Get the field list
-        field_list = ['humidity', 'name'] #'name','latitude', 'longitude'
-        #Set the average_time
-        selected_average = 0
+        
         #Make the API Call 
-        # result = get_historicaldata(missing_sensors,field_list, formatted_start,formatted_end,selected_average,key_read, private_keys_missing)
         result = get_sensor_metadata(missing_sensors, missing_private_keys, key_read)
         if result is not None:
             if len(result) == 1:
@@ -500,7 +478,7 @@ if missing_sensors:
                 """
                 result = client.execute(query_group)
                 group_name_options = {row[0] for row in result.rows}
-
+                group_name_options = list(group_name_options)
                 # group_name_options = ["Orleans","Somes Bar","Happy Camp","Fort Jones", "Arcata", "Blue Lake Rancheria", "Mount Shasta", "Hoopa"]
                 options = group_name_options + ["Enter a new group..."]
                 selected_group = st.selectbox(
