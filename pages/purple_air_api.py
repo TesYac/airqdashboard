@@ -283,32 +283,35 @@ client.execute(create_table_query)
 #     FOREIGN KEY (sensor_index) REFERENCES sensors_meta(sensor_index)
 #     );
 # """)
-result = client.execute("PRAGMA table_info(sensors_meta);")
-st.write(result.rows)
+
+#Use to test db connection. PRAGMA provides the list of columns and their data properties in the db
+# result = client.execute("PRAGMA table_info(sensors_meta);")
+# st.write(result.rows)
 
 #Enter a test value to the sensors_meta table
-insert_query = """
-INSERT OR IGNORE INTO sensors_meta (
-    sensor_index,
-    name,
-    location_name,
-    group_name,
-    latitude,
-    longitude,
-    altitude
-)
-VALUES (?, ?, ?, ?, ?, ?, ?);
-"""
+#Used for testing 
+# insert_query = """
+# INSERT OR IGNORE INTO sensors_meta (
+#     sensor_index,
+#     name,
+#     location_name,
+#     group_name,
+#     latitude,
+#     longitude,
+#     altitude
+# )
+# VALUES (?, ?, ?, ?, ?, ?, ?);
+# """
 
-client.execute(insert_query, [
-    11111,
-    "test_sensor",
-    "Denver",
-    "Colorado1",
-    39.7392,
-    -104.9903,
-    5787.0
-])
+# client.execute(insert_query, [
+#     11111,
+#     "test_sensor",
+#     "Denver",
+#     "Colorado1",
+#     39.7392,
+#     -104.9903,
+#     5787.0
+# ])
 
 
 # Check to see if the values are saved 
@@ -330,8 +333,9 @@ def fetch_data(table):
     ]
 
     return pd.DataFrame(rows)
-
+#Use to view entire sensors_meta db as a dataframe
 st.dataframe(fetch_data("sensors_meta"))
+
 
 
 
@@ -344,8 +348,11 @@ key_read = st.text_input(
     type="password"
 )
 
+#Future version can add a verification of the key and perhaps the points left
+#For now it just recognizes the input and does no validation
 if key_read:
     st.success("API key received!")
+
 #Initializing a list for the sensors
 list_sensors = []
 sensors_list_input = st.text_input("Enter one or multiple sensor index values. If multiple, separate by a comma")
@@ -388,34 +395,42 @@ if answer == 'Yes':
 
 
 private_key_list =  private_key["value"].tolist()
-#Check to see if the sensor indexes are already in the database 
-placeholders = ",".join(["?"] * len(list_sensors))
 
-query = f"""
+
+#Check to see if the sensors are already in the database using sensor indexes
+sensorcheck = ",".join(["?"] * len(list_sensors))
+
+query_index = f"""
 SELECT sensor_index
 FROM sensors_meta
-WHERE sensor_index IN ({placeholders})
+WHERE sensor_index IN ({sensorcheck})
 """
-
-result = client.execute(query, list_sensors)
-
+#Run query to get the list of sensor indexes already in the database
+result = client.execute(query_index, list_sensors)
+#Transfer the results to a list of sensor indexes
 existing_sensors = {row[0] for row in result.rows}
+if(existing_sensors):
+    st.write(existing_sensors)
 
-st.write(existing_sensors)
+#Need to identify sensors not in db as missing_sensors and capture their private keys if they had one
 missing_sensors = []
 missing_private_keys = []
+
 
 for i, sensor in enumerate(list_sensors):
     if sensor not in existing_sensors:
         missing_sensors.append(sensor)
         
         missing_private_keys.append(private_key_list[i])
+
 #Convert list to a pd data frame
 private_keys_missing= pd.DataFrame(missing_private_keys, columns=["value"])
 
-st.write("Existing sensors in the Database:", existing_sensors)
-st.write("Missing:", missing_sensors)
-st.write("Missing sensors private key:", missing_private_keys)
+if(existing_sensors):
+    st.write("Existing sensors in the Database:", existing_sensors)
+if(missing_sensors):
+    st.write("Missing:", missing_sensors)
+    st.write("Missing sensors private key:", missing_private_keys)
 
 #Ask the user if they would like to add the missing sensors to the database 
 if missing_sensors:
@@ -424,11 +439,13 @@ if missing_sensors:
     )
 
     add_sensors = st.radio(
-        "Would you like to add these sensors to the database?",
+        "Would you like to add one or more of these sensors to the database?",
         ["No", "Yes"]
     )
 
     if add_sensors == "Yes":
+
+
         # Insert sensors here
         #Get start and end dates 
         #Start time
@@ -460,12 +477,12 @@ if missing_sensors:
                 .fromtimestamp(df['date_created'][0], UTC)
                 .astimezone(ZoneInfo("America/Los_Angeles")))
                 date_created = df['date_created'].iloc[0].isoformat() 
-                st.write(date_created)
+                # st.write(date_created)
                 df['last_seen'] = (datetime
                 .fromtimestamp(df['last_seen'][0], UTC)
                 .astimezone(ZoneInfo("America/Los_Angeles")))
-                # st.write(type(df['date_created']))
                 last_seen = df['last_seen'].iloc[0].isoformat() 
+                st.write('The sensor Information obtained from PurpleAir is below.')
                 st.dataframe(df)
                 #location of sensor 
                 if(df['location_type'][0] == 0):
@@ -476,8 +493,15 @@ if missing_sensors:
                 location_name = st.text_input(
                 "Enter a location name for this sensor (optional):",
                 placeholder="e.g., Orleans")
+                #Get group name options from db 
+                query_group = f"""
+                    SELECT group_name
+                    FROM sensors_meta
+                """
+                result = client.execute(query_group)
+                group_name_options = {row[0] for row in result.rows}
 
-                group_name_options = ["Orleans","Somes Bar","Happy Camp","Fort Jones", "Arcata", "Blue Lake Rancheria", "Mount Shasta", "Hoopa"]
+                # group_name_options = ["Orleans","Somes Bar","Happy Camp","Fort Jones", "Arcata", "Blue Lake Rancheria", "Mount Shasta", "Hoopa"]
                 options = group_name_options + ["Enter a new group..."]
                 selected_group = st.selectbox(
                     "Select a sensor group:",options)
@@ -491,7 +515,8 @@ if missing_sensors:
                     group_name = selected_group
 
                 group_name = group_name or None
-                st.write(f'You selected or entered a group name of: {group_name}')
+                if(group_name):
+                    st.write(f'You selected or entered a group name of: {group_name}')
                 
                 insert_query = """
                 INSERT OR IGNORE INTO sensors_meta (
@@ -508,6 +533,7 @@ if missing_sensors:
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?)
                 """
+
                 client.execute(insert_query, [
                     date_created,
                     last_seen,
@@ -521,6 +547,13 @@ if missing_sensors:
                     str(located_in) if located_in else None
                     
                 ])
+
+                # Double check sensor is added to the db by sending a query
+                result = client.execute(query_index, sensor_index)
+                returned_index = {row[0] for row in result.rows}
+                st.write(returned_index)
+                if(returned_index):
+                    st.write(returned_index)
 
 
             else:
@@ -562,38 +595,38 @@ if missing_sensors:
 
                     group_name = group_name or None
                     st.write(f'You selected or entered a group name of: {group_name}')
+                    if st.button("Save Sensor to DB?"):
+                        insert_query = """
+                        INSERT OR IGNORE INTO sensors_meta (
+                            date_created,
+                            last_seen,
+                            sensor_index,
+                            name,
+                            latitude,
+                            longitude,
+                            altitude,
+                            location_name,
+                            group_name, 
+                            located_in
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?)
+                        """
+                        if st.button(f"**{'Add sensor {sensor_index} to the database'}**"):
+                            client.execute(insert_query, [
+                                date_created,
+                                last_seen,
+                                int(df["sensor_index"].iloc[0]),
+                                str(df["name"].iloc[0]) if pd.notna(df["name"].iloc[0]) else None,
+                                float(df["latitude"].iloc[0]) if pd.notna(df["latitude"].iloc[0]) else None,
+                                float(df["longitude"].iloc[0]) if pd.notna(df["longitude"].iloc[0]) else None,
+                                float(df["altitude"].iloc[0]) if pd.notna(df["altitude"].iloc[0]) else None,
+                                str(group_name) if group_name else None,
+                                str(location_name) if location_name else None,
+                                str(located_in) if located_in else None
+                                
+                            ])
                     
-                    insert_query = """
-                    INSERT OR IGNORE INTO sensors_meta (
-                        date_created,
-                        last_seen,
-                        sensor_index,
-                        name,
-                        latitude,
-                        longitude,
-                        altitude,
-                        location_name,
-                        group_name, 
-                        located_in
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?)
-                    """
-                    client.execute(insert_query, [
-                        date_created,
-                        last_seen,
-                        int(df["sensor_index"].iloc[0]),
-                        str(df["name"].iloc[0]) if pd.notna(df["name"].iloc[0]) else None,
-                        float(df["latitude"].iloc[0]) if pd.notna(df["latitude"].iloc[0]) else None,
-                        float(df["longitude"].iloc[0]) if pd.notna(df["longitude"].iloc[0]) else None,
-                        float(df["altitude"].iloc[0]) if pd.notna(df["altitude"].iloc[0]) else None,
-                        str(group_name) if group_name else None,
-                        str(location_name) if location_name else None,
-                        str(located_in) if located_in else None
-                        
-                    ])
                     
-                
-        
         st.success("Sensors added successfully!")
 
 
